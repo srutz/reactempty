@@ -16,3 +16,11 @@ body {
     flex-direction: column;
     height: 1px;
 }
+
+ul {
+    @apply flex flex-col gap-2;
+}
+
+li {
+    @apply text-sm shadow-lg m-2 p-4 rounded-lg bg-gray-100;
+}
