@@ -1,6 +1,30 @@
 import { ReactNode } from "react"
-import { createBrowserRouter, Outlet, RouterProvider, useLocation, useNavigate } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
+
+type QuoteType = { id: number; quote: string; author: string }
+type QuotesResponse = { quotes: QuoteType[]; total: number; skip: number; limit: number }
+
+export function QuotePanel({ quote }: { quote: QuoteType }) {
+    return (
+        <div className="shadow-lg flex flex-col gap-2 p-4 m-4 border border-gray-200 rounded max-w-96">
+            <div>{quote.quote}</div>
+            <div className="grow"></div>
+            <div className="text-sm text-gray-500"> - {quote.author}</div>
+        </div>
+    )
+}
+
+const loadQuotes = async () => {
+    const p = new URLSearchParams(window.location.search)
+    let url = "https://dummyjson.com/quotes"
+    if (p.size > 0) {
+        url += "?" + p.toString()
+    }
+    const response = await fetch(url)
+    const json = await response.json()
+    return json as QuotesResponse
+}
 
 const router = createBrowserRouter([
     {
@@ -9,12 +33,73 @@ const router = createBrowserRouter([
         children: [
             { path: "/", element: <Page1 />, },
             { path: "/dashboard", element: <Page1 />, },
-            { path: "/products", element: <Page2 />, },
-            { path: "/quotes", element: <Page3 />, },
+            { path: "/quotes", element: <Page2 />, loader: loadQuotes },
+            { path: "/products", element: <Page3 />, },
         ]
     },
 ])
 
+export function Page1() {
+    return (<ContentPanel title="Dashboard" >
+        <div className="flex-1 bg-indigo-200 flex flex-col items-center justify-center">
+            <Banner>The Dashboard</Banner>
+        </div></ContentPanel>
+    )
+}
+
+export function Page2() {
+    const navigate = useNavigate()
+    const response = useLoaderData() as QuotesResponse
+    const prev = () => { moveBy(-response.limit) }
+    const next = () => { moveBy(response.limit) }
+    const moveBy = (offset: number) => {
+        const searchParams = new URLSearchParams(location.search)
+        searchParams.set('offset', (response.skip + offset).toString())
+        navigate({
+            pathname: location.pathname,
+            search: "?" + searchParams,
+        })
+    }
+    return (
+        <ContentPanel title="Quotes" >
+            <div className="flex-1 flex flex-col items-center">
+                <div className="h-1 grow flex flex-wrap overflow-y-auto">
+                    {response.quotes.map((q) => <QuotePanel key={q.id} quote={q}></QuotePanel>)}
+                </div>
+                <Pagination total={response.total} skip={response.skip} limit={response.limit} next={next} prev={prev}></Pagination>
+            </div>
+        </ContentPanel>)
+}
+
+export function Page3() {
+    return (<ContentPanel title="Products" ><div className="flex-1 bg-indigo-200"></div></ContentPanel>)
+}
+
+
+export function Banner({ children }: { children: ReactNode }) {
+    return (<div className="text-[length:80px] font-bold">{children}</div>)
+}
+
+export function Button({ children, clicked }: { children: ReactNode, clicked: () => void }) {
+    return (
+        <button className="px-3 py-1 bg-gray-200 text-gray-500 min-w-24 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            onClick={clicked}>
+            {children}
+        </button>
+    )
+}
+
+export function Pagination({ total, skip, limit, next, prev }: { total: number; skip: number; limit: number, next: () => void; prev: () => void }) {
+    const pageCount = Math.ceil(total / limit)
+    const page = 1 + Math.floor(skip / limit)
+    return (
+        <div className="flex justify-center items-center space-x-1 mt-4 gap-4">
+            <Button clicked={prev}>Previous</Button>
+            <span>{page} of {pageCount}</span>
+            <Button clicked={next}>Next</Button>
+        </div>
+    )
+}
 
 export function Titlebar({ children }: { children: ReactNode }) {
     return (
@@ -38,11 +123,14 @@ export function SidebarMenu({ title, items }: { title: string, items: MenuItemTy
     )
 }
 
-export type MenuItemType = { label: string, active?: boolean, clicked: () => void }
+export type MenuItemType = { label: string, pathname: string, }
 
-export function SidebarMenuItem({ label, clicked, active }: MenuItemType) {
+export function SidebarMenuItem({ label, pathname }: MenuItemType) {
+    const navigate = useNavigate()
+    const location = useLocation()
+    const active = location.pathname == pathname
     return (
-        <div onClick={clicked} className={`cursor-pointer select-none hover:underline my-1 px-2 py-1 pr-1 text-[length:14px] ${active ? "rounded bg-gray-100 rounded-md" : ""}`}>
+        <div onClick={() => navigate(pathname)} className={`cursor-pointer select-none hover:underline my-1 px-2 py-1 pr-1 text-[length:14px] ${active ? "rounded bg-gray-200 rounded-md" : ""}`}>
             {label}
         </div>
     )
@@ -58,31 +146,18 @@ export function ContentPanel({ title, children }: { title: string, children: Rea
 }
 
 
-export function Page1() {
-    return (<ContentPanel title="Dashboard" ><div className="flex-1 bg-orange-200"></div></ContentPanel>)
-}
-
-export function Page2() {
-    return (<ContentPanel title="Quotes" ><div className="flex-1 bg-pink-200"></div></ContentPanel>)
-}
-
-export function Page3() {
-    return (<ContentPanel title="Products" ><div className="flex-1 bg-indigo-200"></div></ContentPanel>)
-}
-
 export function Main() {
-    const navigate = useNavigate()
-
+    const { pathname } = useLocation()
     const menuItems: MenuItemType[] = [
-        { label: "Dashboard", clicked: () => navigate("/dashboard"), active: true },
-        { label: "Quotes", clicked: () => navigate("/quotes") },
-        { label: "Products", clicked: () => navigate("/products") },
+        { label: "Dashboard", pathname: "/dashboard" },
+        { label: "Quotes", pathname: "/quotes" },
+        { label: "Products", pathname: "/products" },
     ]
     return (
         <div className="bg-black shrink grow h-1 flex flex-col gap-4 p-4 pt-8">
             <div className="grow overflow-hidden mx-2 rounded bg-gray-700 shadow-md flex flex-col">
                 <div className="flex items-center justify-center px-2 pt-2">
-                    <Titlebar>Router Sample</Titlebar>
+                    <Titlebar>{pathname}</Titlebar>
                 </div>
                 <div className="flex grow overflow-hidden bg-white text-gray-600 rounded-lg mx-4 mb-4 mt-2">
                     <SidebarMenu title="😎 Router Stuff" items={menuItems} />
