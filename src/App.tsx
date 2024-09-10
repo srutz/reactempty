@@ -101,13 +101,21 @@ export function Page3() {
 export function QuoteDetails() {
     const quote = useLoaderData() as QuoteType
     const navigate = useNavigate()
+    const closed = () => {
+        let url = "/quotes"
+        const page = (quote.id - 1) / PAGE_SIZE
+        if (page) {
+            url += "/?page=" + (page + 1)
+        }
+        navigate(url)
+    }
     const content = (
         <div className="flex flex-col gap-4 pt-4 pb-4">
             <img src="https://picsum.photos/400/300" className="rounded-lg" />
             <div className="flex-1 text-2xl">{quote.quote}</div>
         </div>)
    return (
-        <Modal show title={"Quote No " + quote.id} onClose={() => navigate(-1)}>
+        <Modal show title={"Quote No " + quote.id} onClose={closed}>
             {content}
         </Modal>
    )
