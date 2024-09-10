@@ -22,8 +22,11 @@ const loadQuotes = async ( props: any ) => {
     const p = new URL(search).searchParams
     let url = "https://dummyjson.com/quotes"
     p.set("limit", (PAGE_SIZE).toString())
-    if (p.size > 0) {
-        url += "?" + p.toString()
+    let page = 0
+    const pageRaw = p.get("page")
+    if (pageRaw) {
+        page = Number.parseInt(pageRaw) - 1
+        url += "?skip=" + (page * PAGE_SIZE)
     }
     const response = await fetch(url)
     const json = await response.json()
@@ -70,11 +73,10 @@ export function Page2() {
     const next = () => { moveTo(page + 1) }
     const moveTo = (page: number) => {
         const searchParams = new URLSearchParams(location.search);
-        const skip = (page * PAGE_SIZE).toString()
-        if (skip) {
-            searchParams.set("skip", (skip).toString())
+        if (page >= 1) {
+            searchParams.set("page", (page +1).toString())
         } else {
-            searchParams.delete("skip")
+            searchParams.delete("page")
         }
         const newUrl = `/quotes/?${searchParams.toString()}`
         navigate(newUrl)
@@ -98,11 +100,17 @@ export function Page3() {
 
 export function QuoteDetails() {
     const quote = useLoaderData() as QuoteType
-    return (
-    <div className="flex flex-col gap-4 pt-4 pb-4">
-        <img src="https://picsum.photos/400/300" className="rounded-lg" />
-        <div className="flex-1 text-2xl">{quote.quote}</div>
-    </div>)
+    const navigate = useNavigate()
+    const content = (
+        <div className="flex flex-col gap-4 pt-4 pb-4">
+            <img src="https://picsum.photos/400/300" className="rounded-lg" />
+            <div className="flex-1 text-2xl">{quote.quote}</div>
+        </div>)
+   return (
+        <Modal show title={"Quote No " + quote.id} onClose={() => navigate(-1)}>
+            {content}
+        </Modal>
+   )
 }
 
 export function Banner({ children }: { children: ReactNode }) {
@@ -139,6 +147,40 @@ export function Titlebar({ children }: { children: ReactNode }) {
         </div>
     )
 }
+
+export function Modal({ show, title, onClose, children }: {
+    show: boolean
+    title: string
+    onClose: () => void
+    children: React.ReactNode
+}) {
+    if (!show) {
+        return null
+    }
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white rounded-lg shadow-lg" style={{ width: "calc(min(800px,60vw))"}}>
+                <div className="flex justify-between items-center p-4 border-b">
+                    <h2 className="text-lg font-semibold">{title}</h2>
+                    <button
+                        onClick={onClose}
+                        className="text-gray-500 hover:text-gray-800 text-xl">
+                        &times;
+                    </button>
+                </div>
+                <div className="p-4">
+                    {children}
+                </div>
+                <div className="flex justify-end p-4 border-t">
+                    <button onClick={onClose} className="largebutton">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
+   
 
 export function SidebarMenu({ title, items }: { title: string, items: MenuItemType[] }) {
     return (
