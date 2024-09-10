@@ -5,9 +5,11 @@ import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation
 type QuoteType = { id: number; quote: string; author: string }
 type QuotesResponse = { quotes: QuoteType[]; total: number; skip: number; limit: number }
 
+const PAGE_SIZE = 250
+
 export function QuotePanel({ quote }: { quote: QuoteType }) {
     return (
-        <div className="shadow-lg flex flex-col gap-2 p-4 m-4 border border-gray-200 rounded max-w-96">
+        <div className="shadow-lg flex flex-col gap-2 p-4 m-4 border border-gray-200 rounded w-96">
             <div>{quote.quote}</div>
             <div className="grow"></div>
             <div className="text-sm text-gray-500"> - {quote.author}</div>
@@ -18,6 +20,7 @@ export function QuotePanel({ quote }: { quote: QuoteType }) {
 const loadQuotes = async () => {
     const p = new URLSearchParams(window.location.search)
     let url = "https://dummyjson.com/quotes"
+    p.set("limit", (PAGE_SIZE).toString())
     if (p.size > 0) {
         url += "?" + p.toString()
     }
@@ -53,18 +56,23 @@ export function Page2() {
     const prev = () => { moveBy(-response.limit) }
     const next = () => { moveBy(response.limit) }
     const moveBy = (offset: number) => {
-        const searchParams = new URLSearchParams(location.search)
-        searchParams.set('offset', (response.skip + offset).toString())
-        navigate({
-            pathname: location.pathname,
-            search: "?" + searchParams,
-        })
+        const searchParams = new URLSearchParams(location.search);
+        const oldOffset = Number.parseInt(searchParams.get("skip") || "0") || 0
+        if (offset) {
+            debugger
+            searchParams.set("skip", (oldOffset + offset).toString())
+        } else {
+            searchParams.delete("skip")
+        }
+        const newUrl = `${location.pathname}?${searchParams.toString()}`
+        navigate(newUrl)
+        console.log(newUrl)
     }
     return (
         <ContentPanel title="Quotes" >
             <div className="flex-1 flex flex-col items-center">
-                <div className="h-1 grow flex flex-wrap overflow-y-auto">
-                    {response.quotes.map((q) => <QuotePanel key={q.id} quote={q}></QuotePanel>)}
+                <div className="h-1 grow grid grid-cols-2 overflow-y-auto self-stretch">
+                    {response.quotes.map((q) => <div className="flex justify-center"><QuotePanel key={q.id} quote={q}></QuotePanel></div>)}
                 </div>
                 <Pagination total={response.total} skip={response.skip} limit={response.limit} next={next} prev={prev}></Pagination>
             </div>
@@ -90,8 +98,9 @@ export function Button({ children, clicked }: { children: ReactNode, clicked: ()
 }
 
 export function Pagination({ total, skip, limit, next, prev }: { total: number; skip: number; limit: number, next: () => void; prev: () => void }) {
-    const pageCount = Math.ceil(total / limit)
-    const page = 1 + Math.floor(skip / limit)
+    const pageCount = Math.ceil(total / PAGE_SIZE)
+    const page = 1 + Math.floor(skip / PAGE_SIZE)
+    console.table({total, limit, skip, pageCount, page})
     return (
         <div className="flex justify-center items-center space-x-1 mt-4 gap-4">
             <Button clicked={prev}>Previous</Button>
@@ -116,7 +125,7 @@ export function SidebarMenu({ title, items }: { title: string, items: MenuItemTy
                 <div className="font-extrabold text-base">{title}</div>
             </div>
             <div className="h-7"></div>
-            <div className="font-bold text-gray-800">
+            <div className="font-bold text-gray-800 min-w-40">
                 {items.map((item, index) => <SidebarMenuItem key={index} {...item} />)}
             </div>
         </div>
