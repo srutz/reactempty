@@ -1,5 +1,5 @@
-import { ReactNode } from "react"
-import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { ComponentProps, ReactNode } from "react"
+import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate } from "react-router-dom";
 
 
 type QuoteType = { id: number; quote: string; author: string }
@@ -17,8 +17,9 @@ export function QuotePanel({ quote }: { quote: QuoteType }) {
     )
 }
 
-const loadQuotes = async () => {
-    const p = new URLSearchParams(window.location.search)
+const loadQuotes = async ( props: any ) => {
+    const search = props.request.url as string
+    const p = new URL(search).searchParams
     let url = "https://dummyjson.com/quotes"
     p.set("limit", (PAGE_SIZE).toString())
     if (p.size > 0) {
@@ -29,6 +30,14 @@ const loadQuotes = async () => {
     return json as QuotesResponse
 }
 
+const loadSingleQuote = async ( props: any ) => {
+    const id = props.params.id
+    let url = "https://dummyjson.com/quotes/" + id
+    const response = await fetch(url)
+    const json = await response.json()
+    return json as QuoteType
+}
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -36,7 +45,10 @@ const router = createBrowserRouter([
         children: [
             { path: "/", element: <Page1 />, },
             { path: "/dashboard", element: <Page1 />, },
-            { path: "/quotes", element: <Page2 />, loader: loadQuotes },
+            { path: "/quotes", element: <Page2 />, loader: loadQuotes, children: [
+                { path: "/quotes/:id", element: <QuoteDetails />, loader: loadSingleQuote },
+            ] 
+            },
             { path: "/products", element: <Page3 />, },
         ]
     },
@@ -53,28 +65,29 @@ export function Page1() {
 export function Page2() {
     const navigate = useNavigate()
     const response = useLoaderData() as QuotesResponse
-    const prev = () => { moveBy(-response.limit) }
-    const next = () => { moveBy(response.limit) }
-    const moveBy = (offset: number) => {
+    const page = Math.floor(response.skip / PAGE_SIZE)
+    const prev = () => { moveTo(page - 1) }
+    const next = () => { moveTo(page + 1) }
+    const moveTo = (page: number) => {
         const searchParams = new URLSearchParams(location.search);
-        const oldOffset = Number.parseInt(searchParams.get("skip") || "0") || 0
-        if (offset) {
-            debugger
-            searchParams.set("skip", (oldOffset + offset).toString())
+        const skip = (page * PAGE_SIZE).toString()
+        if (skip) {
+            searchParams.set("skip", (skip).toString())
         } else {
             searchParams.delete("skip")
         }
-        const newUrl = `${location.pathname}?${searchParams.toString()}`
+        const newUrl = `/quotes/?${searchParams.toString()}`
         navigate(newUrl)
-        console.log(newUrl)
     }
     return (
         <ContentPanel title="Quotes" >
-            <div className="flex-1 flex flex-col items-center">
+            <div className="flex-1 flex flex-col items-stretch">
                 <div className="h-1 grow grid grid-cols-2 overflow-y-auto self-stretch">
-                    {response.quotes.map((q) => <div className="flex justify-center"><QuotePanel key={q.id} quote={q}></QuotePanel></div>)}
+                    {response.quotes.map((q) => <div key={q.id} onClick={() => { navigate(`/quotes/${q.id}`) }}
+                        className="flex justify-center cursor-pointer hover:text-black"><QuotePanel quote={q}></QuotePanel></div>)}
                 </div>
                 <Pagination total={response.total} skip={response.skip} limit={response.limit} next={next} prev={prev}></Pagination>
+                <Outlet></Outlet>
             </div>
         </ContentPanel>)
 }
@@ -83,29 +96,38 @@ export function Page3() {
     return (<ContentPanel title="Products" ><div className="flex-1 bg-indigo-200"></div></ContentPanel>)
 }
 
+export function QuoteDetails() {
+    const quote = useLoaderData() as QuoteType
+    return (
+    <div className="flex flex-col gap-4 pt-4 pb-4">
+        <img src="https://picsum.photos/400/300" className="rounded-lg" />
+        <div className="flex-1 text-2xl">{quote.quote}</div>
+    </div>)
+}
 
 export function Banner({ children }: { children: ReactNode }) {
     return (<div className="text-[length:80px] font-bold">{children}</div>)
 }
 
-export function Button({ children, clicked }: { children: ReactNode, clicked: () => void }) {
+export function Button({ children, clicked, ...props }: { children: ReactNode, clicked: () => void } & ComponentProps<"button">) {
     return (
-        <button className="px-3 py-1 bg-gray-200 text-gray-500 min-w-24 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-            onClick={clicked}>
+        <button className="smallbutton"
+            onClick={clicked} {...props}>
             {children}
         </button>
     )
 }
 
-export function Pagination({ total, skip, limit, next, prev }: { total: number; skip: number; limit: number, next: () => void; prev: () => void }) {
+export function Pagination({ total, skip, next, prev }: { total: number; skip: number; limit: number, next: () => void; prev: () => void }) {
     const pageCount = Math.ceil(total / PAGE_SIZE)
-    const page = 1 + Math.floor(skip / PAGE_SIZE)
-    console.table({total, limit, skip, pageCount, page})
+    const page = Math.floor(skip / PAGE_SIZE)
+    const hasNext = page < pageCount - 1
+    const hasPrev = page > 0
     return (
         <div className="flex justify-center items-center space-x-1 mt-4 gap-4">
-            <Button clicked={prev}>Previous</Button>
-            <span>{page} of {pageCount}</span>
-            <Button clicked={next}>Next</Button>
+            <Button clicked={prev} disabled={!hasPrev}>Previous</Button>
+            <span>{page + 1} of {pageCount}</span>
+            <Button clicked={next} disabled={!hasNext}>Next</Button>
         </div>
     )
 }
@@ -163,8 +185,8 @@ export function Main() {
         { label: "Products", pathname: "/products" },
     ]
     return (
-        <div className="bg-black shrink grow h-1 flex flex-col gap-4 p-4 pt-8">
-            <div className="grow overflow-hidden mx-2 rounded bg-gray-700 shadow-md flex flex-col">
+        <div className="bg-black shrink grow h-1 flex flex-col gap-4 p-4 pt-8 items-center">
+            <div className="grow overflow-hidden mx-2 rounded bg-gray-700 shadow-md flex flex-col w-full lg:w-[length:1024px]">
                 <div className="flex items-center justify-center px-2 pt-2">
                     <Titlebar>{pathname}</Titlebar>
                 </div>
