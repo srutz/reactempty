@@ -1,5 +1,5 @@
 import { ComponentProps, ReactNode } from "react"
-import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useNavigation, useRouteError } from "react-router-dom";
 
 
 type QuoteType = { id: number; quote: string; author: string }
@@ -17,10 +17,10 @@ export function QuotePanel({ quote }: { quote: QuoteType }) {
     )
 }
 
-const loadQuotes = async ( props: any ) => {
+const loadQuotes = async (props: any) => {
     const search = props.request.url as string
     const p = new URL(search).searchParams
-    let url = "https://dummyjson.com/quotes"
+    let url = "htxxtps://dummyjson.com/quotes"
     p.set("limit", (PAGE_SIZE).toString())
     let page = 0
     const pageRaw = p.get("page")
@@ -33,7 +33,7 @@ const loadQuotes = async ( props: any ) => {
     return json as QuotesResponse
 }
 
-const loadSingleQuote = async ( props: any ) => {
+const loadSingleQuote = async (props: any) => {
     const id = props.params.id
     let url = "https://dummyjson.com/quotes/" + id
     const response = await fetch(url)
@@ -48,11 +48,14 @@ const router = createBrowserRouter([
         children: [
             { path: "/", element: <Page1 />, },
             { path: "/dashboard", element: <Page1 />, },
-            { path: "/quotes", element: <Page2 />, loader: loadQuotes, children: [
-                { path: "/quotes/:id", element: <QuoteDetails />, loader: loadSingleQuote },
-            ] 
+            {
+                path: "/quotes", element: <Page2 />, loader: loadQuotes, children: [
+                    { path: "/quotes/:id", element: <QuoteDetails />, loader: loadSingleQuote },
+                ],
+                errorElement: <Error></Error>
             },
             { path: "/products", element: <Page3 />, },
+            { path: "*", element: <Error>We haven't found where you were looking for</Error> },
         ]
     },
 ])
@@ -74,7 +77,7 @@ export function Page2() {
     const moveTo = (page: number) => {
         const searchParams = new URLSearchParams(location.search);
         if (page >= 1) {
-            searchParams.set("page", (page +1).toString())
+            searchParams.set("page", (page + 1).toString())
         } else {
             searchParams.delete("page")
         }
@@ -114,11 +117,25 @@ export function QuoteDetails() {
             <img src="https://picsum.photos/400/300" className="rounded-lg" />
             <div className="flex-1 text-2xl">{quote.quote}</div>
         </div>)
-   return (
+    return (
         <Modal show title={"Quote No " + quote.id} onClose={closed}>
             {content}
         </Modal>
-   )
+    )
+}
+
+export function Error({ children } : { children?: ReactNode}) {
+    const error = useRouteError() as any
+    return (<div className="text-[length:14px] font-bold flex flex-col gap-2 m-8">
+        <div className="flex items-center gap-4">
+            <span className="text-red-200 text-xl">⚠</span> {children || "There was an error loading this resource"}
+            </div>
+        {error && ( 
+            <div className="text-xs text-red">{error.toString()}</div>
+        )}
+        </div>
+    )
+
 }
 
 export function Banner({ children }: { children: ReactNode }) {
@@ -167,7 +184,7 @@ export function Modal({ show, title, onClose, children }: {
     }
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg" style={{ width: "calc(min(800px,60vw))"}}>
+            <div className="bg-white rounded-lg shadow-lg" style={{ width: "calc(min(800px,60vw))" }}>
                 <div className="flex justify-between items-center p-4 border-b">
                     <h2 className="text-lg font-semibold">{title}</h2>
                     <button
@@ -188,7 +205,7 @@ export function Modal({ show, title, onClose, children }: {
         </div>
     )
 }
-   
+
 
 export function SidebarMenu({ title, items }: { title: string, items: MenuItemType[] }) {
     return (
