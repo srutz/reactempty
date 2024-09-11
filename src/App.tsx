@@ -20,7 +20,7 @@ export function QuotePanel({ quote }: { quote: QuoteType }) {
 const loadQuotes = async (props: any) => {
     const search = props.request.url as string
     const p = new URL(search).searchParams
-    let url = "htxxtps://dummyjson.com/quotes"
+    let url = "https://dummyjson.com/quotes"
     p.set("limit", (PAGE_SIZE).toString())
     let page = 0
     const pageRaw = p.get("page")
