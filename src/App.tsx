@@ -1,23 +1,34 @@
-import { ReactNode, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 
 export function App() {
-    console.log("rendering app")
+    const [count, setCount] = useState(1)
+    //console.log("rendering app " + count)
+    useEffect(() => {
+        console.log("component mounted")
+        const i = setInterval(() => {
+            setCount((count) => count + 1)
+        }, 250)
+        return () => {
+            console.log("component unmounted")
+            clearInterval(i) 
+        }
+    }, [])
+
+
+    // useEffect(callback, deps)
+    // useEffect(callback, cleanup, deps)
+
     return (
         <div className="bg-gray-200 w-full h-full flex flex-col gap-4 items-center">
             <Box>
-                <BigText text="hello"></BigText>
-                <BigText text="again"></BigText>
-                <div>Die Woche schneit es wahrscheinlich</div>
-            </Box>
-            <Box>
-                <BigText text="bonjour"></BigText>
+                <BigText text={count.toString()}></BigText>
             </Box>
         </div>
     )
 }
 
 function BigText(props: { text: string }) {
-    console.log("rendering bigtext: text=" + props.text)
+    //console.log("rendering bigtext: text=" + props.text)
     return (
         <div className="text-4xl">{props.text}</div>
     )
@@ -25,7 +36,7 @@ function BigText(props: { text: string }) {
 
 function Box(props: { children: ReactNode }) {
     const [ open, setOpen ] = useState(true)
-    console.log("rendering box: open=" + open)
+    //console.log("rendering box: open=" + open)
     const handleClick = () => {
         setOpen(!open)
     }
