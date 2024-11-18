@@ -30,13 +30,11 @@ function Box(props: { children: ReactNode }) {
         setOpen(!open)
     }
     const cn = "motion-preset-pop bg-white border border-gray-300 shadow-xl rounded-lg m-2 p-4"
-        + " flex flex-col gap-2 w-[300px]"
+        + " flex flex-col w-[300px]"
     return (
         <div className={cn} >
             <div onClick={handleClick} className="select-none cursor-pointer self-end">X</div>
-            <div className={open ? "flex flex-col" : "hidden"}>
-                {props.children}
-            </div>
+            {open && props.children}
         </div>
     )
 }
