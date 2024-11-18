@@ -3,6 +3,7 @@
 import { createBrowserRouter, LoaderFunctionArgs, NavLink, RouteObject, RouterProvider, useLoaderData } from 'react-router-dom'
 import { ProductViewer } from './ProductViewer'
 import { Product } from './Types'
+import { useEffect } from 'react'
 
 const routes = [
     { path: "/", Component: Main },
@@ -26,13 +27,19 @@ export function App() {
 
 
 function Main() {
-    const products = [ 17, 40, 56, 77, 89 ]
+    const products = [ 7, 8, 20, 25, 30, 37, 40, 42, 45, 50 ]
+    useEffect(() => {
+        products.forEach((id, index) => {
+            const element = document.getElementById("product" + id)
+            setTimeout(() => element?.classList.add("motion-running"), 50 + (index * 50))
+        })
+    }, [])
     return (
-        <div className="flex-1 bg-orange-200">
+        <div className="flex-1 bg-gradient-to-br from-white to-indigo-300">
             <div className="flex flex-row gap-4 flex-wrap justify-center">
-                {products.map((id) => (
-                    <NavLink key={id} to={"/product/" + id}>
-                        <div className="bg-white p-4 m-2 rounded-lg shadow-xl border border-gray-200 flex flex-col gap-2">
+                {products.map((id, index) => (
+                    <NavLink key={id} to={"/product/" + id} id={"product" + id} className=" motion-ease-spring-bouncier motion-scale-in-0 motion-paused">
+                        <div className="bg-white p-4 m-2 rounded-lg shadow-xl flex flex-col gap-2">
                             <div className="text-lg font-bold">Produkt {id}</div>
                         </div>
                     </NavLink>
