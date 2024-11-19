@@ -49,13 +49,19 @@ export function App111() {
     </div>)
 }
 
+
+
+
+
+
 type QuoteType = { id: number, quote: string, author: string }
 
 function Quote(props: { quote?: QuoteType }) {
     return (
-        <div>
-            {props.quote?.quote}
-        </div>
+<div className="w-64 bg-gray-200 border border-gray-300 shadow-xl rounded-lg flex flex-col gap-2 p-4 m-4">
+    <div>{props.quote?.quote}</div>
+    <div className="text-sm text-gray-700 self-end">{props.quote?.author}</div>
+</div>
     )
 }
 
@@ -63,11 +69,12 @@ export function App() {
     const [data,setData] = useState<QuoteType>()
     useEffect(() => {
         (async () => {
-            const response = await fetch("https://dummyjson.com/quotes/13")
+            const response = await fetch("https://dummyjson.com/quotes/17")
             const raw = await response.json() as QuoteType
             setData(raw)
         })() // IIFE
-    }, [])
+    }, []);
+    
     return (
         <Quote quote={data} />
     )
