@@ -38,7 +38,7 @@ export function useQuotes(offset?: number) {
     return { loading, error, data }
 }
 
-export function App() {
+export function App111() {
     const [offset, setOffset] = useState(0)
     const { loading, error, data } = useQuotes(offset)
     return (<div className="flex flex-col gap-2">
@@ -49,3 +49,26 @@ export function App() {
     </div>)
 }
 
+type QuoteType = { id: number, quote: string, author: string }
+
+function Quote(props: { quote?: QuoteType }) {
+    return (
+        <div>
+            {props.quote?.quote}
+        </div>
+    )
+}
+
+export function App() {
+    const [data,setData] = useState<QuoteType>()
+    useEffect(() => {
+        (async () => {
+            const response = await fetch("https://dummyjson.com/quotes/13")
+            const raw = await response.json() as QuoteType
+            setData(raw)
+        })() // IIFE
+    }, [])
+    return (
+        <Quote quote={data} />
+    )
+}
