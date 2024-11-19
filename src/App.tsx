@@ -62,7 +62,7 @@ const router = createBrowserRouter([
 
 export function Page1() {
     return (<ContentPanel title="Dashboard" >
-        <div className="flex-1 bg-indigo-200 flex flex-col items-center justify-center">
+        <div className="flex-1 bg-indigo-200 flex flex-col items-center justify-center motion-preset-fade">
             <Banner>The Dashboard</Banner>
         </div></ContentPanel>
     )
@@ -89,7 +89,7 @@ export function Page2() {
             <div className="flex-1 flex flex-col items-stretch">
                 <div className="h-1 grow grid grid-cols-2 overflow-y-auto self-stretch">
                     {response.quotes.map((q) => <div key={q.id} onClick={() => { navigate(`/quotes/${q.id}`) }}
-                        className="flex justify-center cursor-pointer hover:text-black"><QuotePanel quote={q}></QuotePanel></div>)}
+                        className="flex justify-center cursor-pointer hover:text-black motion-preset-slide-up"><QuotePanel quote={q}></QuotePanel></div>)}
                 </div>
                 <Pagination total={response.total} skip={response.skip} limit={response.limit} next={next} prev={prev}></Pagination>
                 <Outlet></Outlet>
@@ -98,7 +98,7 @@ export function Page2() {
 }
 
 export function Page3() {
-    return (<ContentPanel title="Products" ><div className="flex-1 bg-indigo-200"></div></ContentPanel>)
+    return (<ContentPanel title="Products" ><div className="flex-1 bg-indigo-200 motion-preset-fade"></div></ContentPanel>)
 }
 
 export function QuoteDetails() {
@@ -112,9 +112,18 @@ export function QuoteDetails() {
         }
         navigate(url)
     }
+    const images = [
+        "https://picsum.photos/id/140/300/300",
+        "https://picsum.photos/id/155/300/300",
+        "https://picsum.photos/id/102/400/300",
+        "https://picsum.photos/id/99/400/300",
+        "https://picsum.photos/id/53/400/300",
+
+    ]
+    const image = images[quote.id % images.length]
     const content = (
         <div className="flex flex-col gap-4 pt-4 pb-4">
-            <img src="https://picsum.photos/400/300" className="rounded-lg" />
+            <img src={image} className="object-cover self-center rounded-lg w-[400px] h-[300px]" />
             <div className="flex-1 text-2xl">{quote.quote}</div>
         </div>)
     return (
@@ -126,7 +135,7 @@ export function QuoteDetails() {
 
 export function Error({ children } : { children?: ReactNode}) {
     const error = useRouteError() as any
-    return (<div className="text-[length:14px] font-bold flex flex-col gap-2 m-8">
+    return (<div className="text-[length:14px] font-bold flex flex-col gap-2 m-8 motion-preset-fade">
         <div className="flex items-center gap-4">
             <span className="text-red-200 text-xl">⚠</span> {children || "There was an error loading this resource"}
             </div>
@@ -135,7 +144,6 @@ export function Error({ children } : { children?: ReactNode}) {
         )}
         </div>
     )
-
 }
 
 export function Banner({ children }: { children: ReactNode }) {
@@ -183,8 +191,8 @@ export function Modal({ show, title, onClose, children }: {
         return null
     }
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg" style={{ width: "calc(min(800px,60vw))" }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 motion-preset-fade ">
+            <div className="bg-white rounded-lg shadow-lg motion-preset-expand" style={{ width: "calc(min(800px,60vw))" }}>
                 <div className="flex justify-between items-center p-4 border-b">
                     <h2 className="text-lg font-semibold">{title}</h2>
                     <button
@@ -236,7 +244,7 @@ export function SidebarMenuItem({ label, pathname }: MenuItemType) {
 
 export function ContentPanel({ title, children }: { title: string, children: ReactNode }) {
     return (
-        <div className="p-10 grow flex flex-col">
+        <div className="p-10 grow flex flex-col motion-preset-fade">
             <div className="font-extrabold text-black text-3xl mb-2">{title}</div>
             {children}
         </div>
