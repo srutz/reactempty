@@ -6,8 +6,11 @@ import { useInterval, useWindowSize } from "./useWindowSize"
 export function App() {
     const size = useWindowSize()
     const [key, setKey] = useState(1)
-    useInterval(() => setKey((key) => key + 1), 10_000)
-    //setInterval(() => setKey((key) => key + 1), 10_000)
+
+    // restart animation periodically
+    //useInterval(() => setKey((key) => key + 1), 10_000)
+
+
     if (size.height < 200) return <div>Nicht hoch genug</div>
     return (
         <div className="bg-gray-200 w-full h-full flex flex-col gap-4 items-center">
@@ -56,7 +59,7 @@ function Char({ char, delay }: { delay: number, char: string }) {
     const [ classes, setClasses ] = useState("motion-paused")
     useEffect(() => {
         setTimeout(() => setClasses("motion-running"), delay)
-    })
+    }, [])
     return (
         <div className={"text-[80px] uppercase font-bold motion-preset-shrink " + classes}>{char}</div>
     )

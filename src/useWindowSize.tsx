@@ -15,7 +15,7 @@ export function useWindowSize() {
         return () => {
             window.removeEventListener("resize", l)
         }
-    }, [])
+    }, [  ])
     // ende des größen-überwachung
     return size
 }
