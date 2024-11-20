@@ -4,7 +4,7 @@ import { loadProducts, ProductsPage } from "./ProductsPage";
 import { CartPanel } from "./CartPanel";
 import { useSelector } from "react-redux";
 import { RootState } from "./Store";
-import { CartContext } from "./CartContext";
+import { CartContext, useCartContext } from "./CartContext";
 
 
 type QuoteType = { id: number; quote: string; author: string }
@@ -185,12 +185,12 @@ export function Pagination({ total, skip, next, prev }: { total: number; skip: n
 
 export function Titlebar({ children }: { children: ReactNode }) {
     //const items = useSelector((state: RootState) => state.shoppingCart.items)
-    const { items } = useContext(CartContext)!
+    const { items } = useCartContext()
     let totalCount = 0
     for (const item of items) totalCount += item.count
     let totalPrice = 0
     for (const item of items) totalPrice += item.count * item.product.price
-
+    console.log("rendering titlebar " + totalCount)
     return (
         <div className="flex w-2/3 items-center rounded-md bg-gray-600 text-gray-100 text-sm px-3 py-1">
             Anzahl Items {totalCount}, Gesamtpreis {formatNumberGerman(totalPrice)} 
@@ -198,10 +198,12 @@ export function Titlebar({ children }: { children: ReactNode }) {
     )
 }
 
+const formatter = new Intl.NumberFormat('de-DE', {
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+})
+
 function formatNumberGerman(n: number) {
-    return new Intl.NumberFormat('de-DE', {
-        minimumFractionDigits: 2, maximumFractionDigits: 2
-    }).format(n)
+    return formatter.format(n)
 }
 
 export function Modal({ show, title, onClose, children }: {

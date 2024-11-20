@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./Store";
 import { changeProduct, ShoppingCartItem } from "./ShoppingCart";
-import { CartContext } from "./CartContext";
+import { CartContext, useCartContext } from "./CartContext";
 import { useContext } from "react";
 
 export function CartPanel() {
     // reaktive liste from Shopping-Cart Einträgen
-    const value = useContext(CartContext)!
+    const value = useCartContext()
     const { items } = value
     //const items = useSelector((state: RootState) => state.shoppingCart.items)
 
@@ -19,12 +19,12 @@ export function CartPanel() {
 }
 
 function CartRow({ item }: { item: ShoppingCartItem }) {
-    const value = useContext(CartContext)!
+    const { changeProduct } = useCartContext()
     //const dispatch = useDispatch()
     const handleRemove = () => {
         // ändere den ShoppingCart
         //dispatch(changeProduct({ product: item.product, delta: -1}))
-        value.changeProduct(item.product, -1)
+        changeProduct(item.product, -1)
     }
     return (
         <div className="w-[80%] flex flex-row gap-2 items-center border-b border-gray-300 p-4 mb-2">

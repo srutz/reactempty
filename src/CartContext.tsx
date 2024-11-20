@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { ShoppingCartType } from "./ShoppingCart";
 import { Product } from "./ProductTypes";
 
@@ -42,5 +42,13 @@ export function CartContextWrapper(props: { children: ReactNode}) {
             {props.children}
         </CartContext.Provider>
     )
+}
+
+export function useCartContext() {
+    const c = useContext(CartContext)
+    if (!c) {
+        throw "Provider not set for CartContext"
+    }
+    return c
 }
 
