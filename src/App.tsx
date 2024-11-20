@@ -1,4 +1,4 @@
-import { ComponentProps, ReactNode } from "react"
+import { ComponentProps, ReactNode, useEffect, useRef } from "react"
 import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useNavigation, useRouteError } from "react-router-dom";
 
 
@@ -71,7 +71,11 @@ export function Page1() {
 export function Page2() {
     const navigate = useNavigate()
     const response = useLoaderData() as QuotesResponse
+    const scroller = useRef<HTMLDivElement>(null)
     const page = Math.floor(response.skip / PAGE_SIZE)
+    useEffect(() => {
+        scroller.current?.scroll({top: 0, behavior: "smooth" })
+    }, [page])
     const prev = () => { moveTo(page - 1) }
     const next = () => { moveTo(page + 1) }
     const moveTo = (page: number) => {
@@ -87,9 +91,9 @@ export function Page2() {
     return (
         <ContentPanel title="Quotes" >
             <div className="flex-1 flex flex-col items-stretch">
-                <div className="h-1 grow grid grid-cols-2 overflow-y-auto self-stretch">
+                <div className="h-1 grow grid grid-cols-2 overflow-y-auto self-stretch" ref={scroller}>
                     {response.quotes.map((q) => <div key={q.id} onClick={() => { navigate(`/quotes/${q.id}`) }}
-                        className="flex justify-center cursor-pointer hover:text-black motion-preset-slide-up"><QuotePanel quote={q}></QuotePanel></div>)}
+                        className="flex justify-center cursor-pointer hover:text-black motion-preset-fade"><QuotePanel quote={q}></QuotePanel></div>)}
                 </div>
                 <Pagination total={response.total} skip={response.skip} limit={response.limit} next={next} prev={prev}></Pagination>
                 <Outlet></Outlet>
