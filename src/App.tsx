@@ -1,5 +1,7 @@
 import { ComponentProps, ReactNode, useEffect, useRef } from "react"
 import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useNavigation, useRouteError } from "react-router-dom";
+import { loadProducts, ProductsPage } from "./ProductsPage";
+import { CartPanel } from "./CartPanel";
 
 
 type QuoteType = { id: number; quote: string; author: string }
@@ -54,7 +56,8 @@ const router = createBrowserRouter([
                 ],
                 errorElement: <Error></Error>
             },
-            { path: "/products", element: <Page3 />, },
+            { path: "/products", element: <ProductsPage />, loader: loadProducts, },
+            { path: "/shoppingcart", element: <CartPanel />, loader: loadProducts, },
             { path: "*", element: <Error>We haven't found where you were looking for</Error> },
         ]
     },
@@ -262,6 +265,7 @@ export function Main() {
         { label: "Dashboard", pathname: "/dashboard" },
         { label: "Quotes", pathname: "/quotes" },
         { label: "Products", pathname: "/products" },
+        { label: "Einkaufswagen", pathname: "/shoppingcart" },
     ]
     return (
         <div className="bg-black shrink grow h-1 flex flex-col gap-4 p-4 pt-8 items-center">
