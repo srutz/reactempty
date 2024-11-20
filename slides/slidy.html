@@ -2593,8 +2593,8 @@ Abhängigkeiten.</li>
 ausgeführt.</li>
 <li>Falls die Abhängigkeiten leer sind, wird der Effekt nur einmal
 ausgeführt.</li>
-<li>Falls die Abhängigkeiten nicht undefined sind, wird der Effekt bei
-jedem Rendern ausgeführt. (Undefined bedeutet, dass das Array nicht
+<li>Falls die Abhängigkeiten undefined sind, wird der Effekt bei jedem
+Re-Rendering ausgeführt. (Undefined bedeutet, dass das Array nicht
 angegeben wurde oder explizit als undefined gesetzt wurde.)</li>
 </ul>
 </div>
@@ -3638,7 +3638,7 @@ und kann selber initialisiert werden.</li>
 <div id="react-und-routing-einrichten-des-routing-im-projekt-2"
 class="slide section level1">
 <h1>8.3 React und Routing / Einrichten des Routing im Projekt</h1>
-<h2 id="globale-callback-fr-route-änderungen">Globale Callback f+r
+<h2 id="globale-callback-für-route-änderungen">Globale Callback für
 Route-Änderungen</h2>
 <ul>
 <li>Mittels der Reaktivität von React und des Router Hooks useLocation()
@@ -3714,15 +3714,18 @@ sind.</p></li>
 definiert.</p></li>
 <li><p>Relative Pfade werden ohne <code>/</code> am Anfang
 definiert.</p></li>
+<li><p>Relative Pfade sind sehr gefährlich, da sie zu unerwartetem
+Verhalten führen können. nur weil man eine andere Route verändert
+hat.</p></li>
 <li><p>Beispiel für absolute Pfade:</p></li>
 </ul>
 <div class="sourceCode" id="cb108"><pre
-class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb108-1"><a href="#cb108-1" tabindex="-1"></a><span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;/about&quot;</span> component<span class="op">=</span>{About} <span class="op">/&gt;</span></span></code></pre></div>
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb108-1"><a href="#cb108-1" tabindex="-1"></a>{ path<span class="op">:</span> <span class="st">&quot;/about&quot;</span><span class="op">,</span> element<span class="op">:</span> About }<span class="op">,</span></span></code></pre></div>
 <ul>
 <li>Beispiel für relative Pfade:</li>
 </ul>
 <div class="sourceCode" id="cb109"><pre
-class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb109-1"><a href="#cb109-1" tabindex="-1"></a><span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;about&quot;</span> component<span class="op">=</span>{About} <span class="op">/&gt;</span></span></code></pre></div>
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb109-1"><a href="#cb109-1" tabindex="-1"></a>{ path<span class="op">:</span> <span class="st">&quot;about&quot;</span><span class="op">,</span> element<span class="op">:</span> About }<span class="op">,</span></span></code></pre></div>
 </div>
 <div id="react-und-routing-styling-der-ausgewählten-aktiven-route"
 class="slide section level1">
