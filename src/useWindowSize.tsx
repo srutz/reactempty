@@ -1,0 +1,35 @@
+import { useEffect, useState } from "react"
+
+export function useWindowSize() {
+
+    const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight })
+
+    useEffect(() => {
+        const handleResize = () => {
+            setSize({ width: window.innerWidth, height: window.innerHeight })
+        }
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    return size
+}
+
+export function useScreenOrientation() {
+    const [orientation, setOrientation] = useState(window.screen.orientation.type)
+    useEffect(() => {
+        const handleOrientation = () => {
+            setOrientation(window.screen.orientation.type)
+        }
+        window.addEventListener('orientationchange', handleOrientation)
+        return () => window.removeEventListener('orientationchange', handleOrientation)
+    }, [])
+    return orientation
+}
+
+export function useInterval(func: () => void, delay: number) {
+    useEffect(() => {
+        const id = setInterval(func, delay)
+        return () => clearInterval(id)
+    }, [])
+}
