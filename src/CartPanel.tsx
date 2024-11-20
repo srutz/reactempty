@@ -1,10 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./Store";
 import { changeProduct, ShoppingCartItem } from "./ShoppingCart";
+import { CartContext } from "./CartContext";
+import { useContext } from "react";
 
 export function CartPanel() {
     // reaktive liste from Shopping-Cart Einträgen
-    const items = useSelector((state: RootState) => state.shoppingCart.items)
+    const value = useContext(CartContext)!
+    const { items } = value
+    //const items = useSelector((state: RootState) => state.shoppingCart.items)
+
     return (
         <div className="flex-1 mt-8 w-full flex flex-col gap-2 items-center">
             {items.map((item) => (
@@ -14,10 +19,12 @@ export function CartPanel() {
 }
 
 function CartRow({ item }: { item: ShoppingCartItem }) {
-    const dispatch = useDispatch()
+    const value = useContext(CartContext)!
+    //const dispatch = useDispatch()
     const handleRemove = () => {
         // ändere den ShoppingCart
-        dispatch(changeProduct({ product: item.product, delta: -1}))
+        //dispatch(changeProduct({ product: item.product, delta: -1}))
+        value.changeProduct(item.product, -1)
     }
     return (
         <div className="w-[80%] flex flex-row gap-2 items-center border-b border-gray-300 p-4 mb-2">

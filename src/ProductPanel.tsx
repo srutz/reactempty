@@ -1,7 +1,8 @@
-import { ComponentProps, ReactNode } from "react"
+import { ComponentProps, ReactNode, useContext } from "react"
 import { Product } from "./ProductTypes"
 import { useDispatch } from "react-redux"
 import { changeProduct } from "./ShoppingCart"
+import { CartContext } from "./CartContext"
 
 
 
@@ -14,9 +15,11 @@ function formatNumberGerman(number: number) {
 }
 
 export function ProductPanel({ product }: { product: Product }) {
-    const dispatch = useDispatch()
+    //const dispatch = useDispatch()
+    const value = useContext(CartContext)!
     const handleChange = (delta: number) => {
-        dispatch(changeProduct({ product: product, delta }))
+        //dispatch(changeProduct({ product: product, delta }))
+        value.changeProduct(product, delta)
     }
 
     return (

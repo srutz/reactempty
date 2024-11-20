@@ -1,9 +1,10 @@
-import { ComponentProps, ReactNode, useEffect, useRef } from "react"
+import { ComponentProps, ReactNode, useContext, useEffect, useRef } from "react"
 import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useNavigation, useRouteError } from "react-router-dom";
 import { loadProducts, ProductsPage } from "./ProductsPage";
 import { CartPanel } from "./CartPanel";
 import { useSelector } from "react-redux";
 import { RootState } from "./Store";
+import { CartContext } from "./CartContext";
 
 
 type QuoteType = { id: number; quote: string; author: string }
@@ -183,7 +184,8 @@ export function Pagination({ total, skip, next, prev }: { total: number; skip: n
 }
 
 export function Titlebar({ children }: { children: ReactNode }) {
-    const items = useSelector((state: RootState) => state.shoppingCart.items)
+    //const items = useSelector((state: RootState) => state.shoppingCart.items)
+    const { items } = useContext(CartContext)!
     let totalCount = 0
     for (const item of items) totalCount += item.count
     let totalPrice = 0
