@@ -20,18 +20,20 @@ const shoppingCartSlice = createSlice({
     initialState,
     reducers: {
         changeProduct: (state, action: PayloadAction<{ product: Product, delta: number }>) => {
-            let item = state.items.find(item => item.product.id === action.payload.product.id)
+            const { items } = state
+            const { product, delta } = action.payload
+            let item = items.find(item => item.product.id === product.id)
             if (item) {
-                item.count += action.payload.delta
+                item.count += delta
             } else {
                 item = {
-                    product: action.payload.product,
-                    count: action.payload.delta,
+                    product: product,
+                    count: delta,
                 }
-                state.items.push(item)
+                items.push(item)
             }
             item.count = Math.max(0, item.count)
-            state.items = state.items.filter(item => item.count > 0)
+            state.items = items.filter(item => item.count > 0)
         }
     },
 })
