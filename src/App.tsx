@@ -2,6 +2,8 @@ import { ComponentProps, ReactNode, useEffect, useRef } from "react"
 import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useNavigation, useRouteError } from "react-router-dom";
 import { loadProducts, ProductsPage } from "./ProductsPage";
 import { CartPanel } from "./CartPanel";
+import { useSelector } from "react-redux";
+import { RootState } from "./Store";
 
 
 type QuoteType = { id: number; quote: string; author: string }
@@ -181,11 +183,23 @@ export function Pagination({ total, skip, next, prev }: { total: number; skip: n
 }
 
 export function Titlebar({ children }: { children: ReactNode }) {
+    const items = useSelector((state: RootState) => state.shoppingCart.items)
+    let totalCount = 0
+    for (const item of items) totalCount += item.count
+    let totalPrice = 0
+    for (const item of items) totalPrice += item.count * item.product.price
+
     return (
         <div className="flex w-2/3 items-center rounded-md bg-gray-600 text-gray-100 text-sm px-3 py-1">
-            {children}
+            Anzahl Items {totalCount}, Gesamtpreis {formatNumberGerman(totalPrice)} 
         </div>
     )
+}
+
+function formatNumberGerman(n: number) {
+    return new Intl.NumberFormat('de-DE', {
+        minimumFractionDigits: 2, maximumFractionDigits: 2
+    }).format(n)
 }
 
 export function Modal({ show, title, onClose, children }: {
