@@ -3,14 +3,19 @@ export function App() {
     const leute = [ "Frank", "Hans", "Rudi", "Gisela" ]
     return (
         <div className="text-3xl">
-            {leute.map((l) => (<Greeting message={l} />))}
+            {leute.map((l,i) => (<Greeting key={i} message={l} />))}
         </div>
     )
 }
 
 function Greeting(props : { message: string}) {
-    const v =  <div>Ich grüße dich {
-        props.message == "Frank" ? "NICHT" : props.message}</div>
-    return v
+    let count = 1
+    const inc = () => {
+        console.log("inc clicked " + props.message)
+        count++
+    }
+    return <div onClick={inc}>
+        Ich grüße dich {count} mal {props.message}
+        </div>
 }
 
