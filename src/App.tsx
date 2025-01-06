@@ -1,12 +1,30 @@
-import { ReactNode, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import { MdArrowDownward, MdArrowRight } from "react-icons/md"
 
 export function App() {
     return (
         <FoldPanel message="Message of the day">
             <div className="text-3xl">Hello</div>
+            <Clock></Clock>
         </FoldPanel>
     )
+}
+
+export function Clock() {
+    const [ time, setTime] = useState<Date>()
+    useEffect(() => {
+        // run when mounted
+        const i = setInterval(() => {
+            console.log("setting date")
+            setTime(new Date())
+        }, 1_000) // every 1000 millis
+        // end of run when mounted
+        return () => {
+            // run when unmounted
+            clearInterval(i)
+        }
+    }, [])
+    return (<div>{time?.toLocaleTimeString()}</div>)
 }
 
 type Props = { message: string, children: ReactNode }
