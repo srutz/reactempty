@@ -1,6 +1,7 @@
+import { useState } from "react"
 
 export function App() {
-    const leute = [ "Frank", "Hans", "Rudi", "Gisela" ]
+    const leute = [ "Frank", "Hans", "Rudi", "Jens", "karl" ]
     return (
         <div className="text-3xl">
             {leute.map((l,i) => (<Greeting key={i} message={l} />))}
@@ -9,13 +10,14 @@ export function App() {
 }
 
 function Greeting(props : { message: string}) {
-    let count = 1
-    const inc = () => {
-        console.log("inc clicked " + props.message)
-        count++
+    const [count, setCount] = useState(1)
+    console.log("rendering greeting", count, props.message)
+    const inc = () => { 
+        setCount(oldCount => oldCount + 1)
     }
-    return <div onClick={inc}>
-        Ich grüße dich {count} mal {props.message}
+    return <div onClick={inc} 
+                className="cursor-pointer p-2 hover:underline">
+                    Ich grüße dich {count} mal {props.message}
         </div>
 }
 
