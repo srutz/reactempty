@@ -6,7 +6,29 @@ export function App() {
         <FoldPanel message="Message of the day">
             <div className="text-3xl">Hello</div>
             <Clock></Clock>
+            <WindowSize></WindowSize>
+            <Clock></Clock>
+            <WindowSize></WindowSize>
         </FoldPanel>
+    )
+}
+
+export function WindowSize() {
+    console.log("render windowsize")
+    const [ size, setSize ] = useState({ 
+        width: window.innerWidth, height: window.innerHeight })
+    useEffect(() => {
+        const l = () => {
+            console.log("window resized")
+            setSize({ width: window.innerWidth, height: window.innerHeight })
+        }
+        window.addEventListener("resize", l)
+        return () => {
+            window.removeEventListener("resize", l)
+        }
+    }, [])
+    return (
+        <div>{size.width} x {size.height}</div>
     )
 }
 
@@ -15,7 +37,7 @@ export function Clock() {
     useEffect(() => {
         // run when mounted
         const i = setInterval(() => {
-            console.log("setting date")
+            //console.log("setting date")
             setTime(new Date())
         }, 1_000) // every 1000 millis
         // end of run when mounted
