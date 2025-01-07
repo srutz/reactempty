@@ -7,13 +7,16 @@ type Task = {
 }
 
 export function App() {
-    const initialTasks: Task[] = [
-        { id: 1, title: "Einkaufen", status: "NEW" },
-        { id: 2, title: "Staubsaugen", status: "NEW" },
-        { id: 3, title: "Rasenmähen", status: "NEW" },
-        { id: 4, title: "Schneeschaufeln", status: "NEW" },
-    ]
-    const [tasks, setTasks] = useState(initialTasks)
+    const [tasks, setTasks] = useState(() => {
+        const initialTasks: Task[] = [
+            { id: 1, title: "Einkaufen", status: "NEW" },
+            { id: 2, title: "Staubsaugen", status: "NEW" },
+            { id: 3, title: "Rasenmähen", status: "NEW" },
+            { id: 4, title: "Schneeschaufeln", status: "NEW" },
+        ]
+        console.log("init called")
+        return initialTasks
+    })
     const handleToggle = (task: Task) => {
         // set task to done
         task.status = task.status == "NEW" ? "DONE" : "NEW"
@@ -54,7 +57,6 @@ type Props = { message: string, children: ReactNode }
 
 export function FoldPanel(props: Props) {
     const [ open, setOpen ] = useState(true)
-    console.log("render fp " + open)
     const handleClick = () => setOpen(!open)
     return (
     <div className="bg-gray-200 rounded-lg 
@@ -66,4 +68,6 @@ export function FoldPanel(props: Props) {
         {open && props.children}
     </div>)
 }
+
+
 
