@@ -23,6 +23,9 @@ export function App() {
         const newTasks = [...tasks] // flat copy of tasks[]
         setTasks(newTasks)
     }
+    const handleDelete = (task: Task) => {
+        setTasks(tasks.filter(t => task.id != t.id ))
+    }
     return (
         <FoldPanel message="Message of the day">
             {tasks.map((task, index) => (
@@ -32,9 +35,7 @@ export function App() {
 
             <button onClick={() => handleToggle(task)} className=" p-2 min-w-[120px] rounded text-white bg-blue-500 hover:bg-blue-600">
                 {task.status == "NEW" ? "Set done" : "Set New"}</button>
-            <button onClick={() => {
-                setTasks(tasks.filter(t => task.id != t.id ))
-            }} className=" p-2 rounded text-white bg-red-500 hover:bg-red-600">
+            <button onClick={() => handleDelete(task)} className=" p-2 rounded text-white bg-red-500 hover:bg-red-600">
                 <MdDelete></MdDelete></button>
                     </div>
                 </div>
