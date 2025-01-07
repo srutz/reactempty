@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react"
-import { MdAddBox, MdArrowRight, MdCheck, MdOutlineSquare, MdSquare } from "react-icons/md"
+import { MdAddBox, MdArrowRight, MdCheck, MdDelete, MdOutlineSquare, MdSquare } from "react-icons/md"
 
 
 type Task = {
@@ -14,18 +14,26 @@ export function App() {
         { id: 4, title: "Schneeschaufeln", status: "NEW" },
     ]
     const [tasks, setTasks] = useState(initialTasks)
+    const handleToggle = (task: Task) => {
+        // set task to done
+        task.status = task.status == "NEW" ? "DONE" : "NEW"
+        const newTasks = [...tasks] // flat copy of tasks[]
+        setTasks(newTasks)
+    }
     return (
         <FoldPanel message="Message of the day">
-            {tasks.map((task) => (
-                <div key={task.id} className="flex gap-2 m-2 items-center justify-between">
+            {tasks.map((task, index) => (
+                <div key={index} className="flex gap-2 m-2 items-center justify-between">
                     <TaskDisplay task={task} />
-                    <button onClick={() => {
-                        // set task to done
-                        task.status = task.status == "NEW" ? "DONE" : "NEW"
-                        const newTasks = [...tasks] // flat copy of tasks[]
-                        setTasks(newTasks)
-                    }} className=" p-2 min-w-[120px] rounded text-white bg-blue-500 hover:bg-blue-600">
-                        {task.status == "NEW" ? "Set done" : "Set New"}</button>
+                    <div className="flex gap-2">
+
+            <button onClick={() => handleToggle(task)} className=" p-2 min-w-[120px] rounded text-white bg-blue-500 hover:bg-blue-600">
+                {task.status == "NEW" ? "Set done" : "Set New"}</button>
+            <button onClick={() => {
+                setTasks(tasks.filter(t => task.id != t.id ))
+            }} className=" p-2 rounded text-white bg-red-500 hover:bg-red-600">
+                <MdDelete></MdDelete></button>
+                    </div>
                 </div>
             ))}
         </FoldPanel>
