@@ -36,11 +36,12 @@ export function App() {
     )
 }
 
+type TaskFunc = (t: Task) => void
 
 type TaskDisplayProps = { 
     task: Task, 
-    handleToggle: (t: Task) => void,
-    handleDelete: (t: Task) => void,
+    handleToggle: TaskFunc,
+    handleDelete: TaskFunc,
 }
 
 export const TaskDisplay: FC<TaskDisplayProps> = (props) => {
