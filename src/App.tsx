@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react"
+import { ReactNode, useState, FC } from "react"
 import { MdAddBox, MdArrowRight, MdCheck, MdDelete, MdOutlineSquare, MdSquare } from "react-icons/md"
 
 
@@ -14,7 +14,6 @@ export function App() {
             { id: 3, title: "Rasenmähen", status: "NEW" },
             { id: 4, title: "Schneeschaufeln", status: "NEW" },
         ]
-        console.log("init called")
         return initialTasks
     })
     const handleToggle = (task: Task) => {
@@ -29,25 +28,36 @@ export function App() {
     return (
         <FoldPanel message="Message of the day">
             {tasks.map((task, index) => (
-                <div key={index} className="flex gap-2 m-2 items-center justify-between">
-                    <TaskDisplay task={task} />
-                    <div className="flex gap-2">
-
-            <button onClick={() => handleToggle(task)} className=" p-2 min-w-[120px] rounded text-white bg-blue-500 hover:bg-blue-600">
-                {task.status == "NEW" ? "Set done" : "Set New"}</button>
-            <button onClick={() => handleDelete(task)} className=" p-2 rounded text-white bg-red-500 hover:bg-red-600">
-                <MdDelete></MdDelete></button>
-                    </div>
-                </div>
+                <TaskDisplay key={index} task={task} 
+                    handleDelete={handleDelete} 
+                    handleToggle={handleToggle} />
             ))}
         </FoldPanel>
     )
 }
 
-export function TaskDisplay(props: { task: Task}) {
-    const { task } = props
-    return (<div className="flex items-center gap-2">
-        {task.status == "NEW" ? <MdOutlineSquare/> : <MdCheck />} {task.title}
+
+type TaskDisplayProps = { 
+    task: Task, 
+    handleToggle: (t: Task) => void,
+    handleDelete: (t: Task) => void,
+}
+
+export const TaskDisplay: FC<TaskDisplayProps> = (props) => {
+    const { task, handleToggle, handleDelete } = props
+    return (<div className="m-2 flex items-center gap-2 justify-between ">
+        <div className="flex gap-2 items-center">
+            {task.status == "NEW" ? <MdOutlineSquare/> : <MdCheck />} {task.title}
+        </div>
+
+        <div className="flex gap-2">
+            <button onClick={() => handleToggle(task)} 
+                className=" p-2 min-w-[120px] rounded text-white bg-blue-500 hover:bg-blue-600">
+                    {task.status == "NEW" ? "Set done" : "Set New"}</button>
+            <button onClick={() => handleDelete(task)} 
+                className=" p-2 rounded text-white bg-red-500 hover:bg-red-600">
+        <MdDelete></MdDelete></button>
+        </div>
     </div>)
 }
 
