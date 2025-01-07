@@ -1,53 +1,23 @@
-import { ReactNode, useEffect, useState } from "react"
-import { MdArrowDownward, MdArrowRight } from "react-icons/md"
+import { ReactNode, useState } from "react"
+import { MdArrowRight } from "react-icons/md"
 
 export function App() {
     return (
         <FoldPanel message="Message of the day">
             <div className="text-3xl">Hello</div>
-            <Clock></Clock>
-            <WindowSize></WindowSize>
-            <Clock></Clock>
-            <WindowSize></WindowSize>
+            <Counter></Counter>
         </FoldPanel>
     )
 }
 
-export function WindowSize() {
-    console.log("render windowsize")
-    const [ size, setSize ] = useState({ 
-        width: window.innerWidth, height: window.innerHeight })
-    useEffect(() => {
-        const l = () => {
-            console.log("window resized")
-            setSize({ width: window.innerWidth, height: window.innerHeight })
-        }
-        window.addEventListener("resize", l)
-        return () => {
-            window.removeEventListener("resize", l)
-        }
-    }, [])
+export function Counter() {
+    const [count, setCount ] = useState({ val: 1})
     return (
-        <div>{size.width} x {size.height}</div>
+        <button onClick={() => { }}>Change me {count.val} </button>
     )
 }
 
-export function Clock() {
-    const [ time, setTime] = useState<Date>()
-    useEffect(() => {
-        // run when mounted
-        const i = setInterval(() => {
-            //console.log("setting date")
-            setTime(new Date())
-        }, 1_000) // every 1000 millis
-        // end of run when mounted
-        return () => {
-            // run when unmounted
-            clearInterval(i)
-        }
-    }, [])
-    return (<div>{time?.toLocaleTimeString()}</div>)
-}
+
 
 type Props = { message: string, children: ReactNode }
 
