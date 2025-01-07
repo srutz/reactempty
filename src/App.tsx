@@ -3,18 +3,34 @@ import { useEffect, useState } from "react"
 export function App() {
     return (
         <div className="text-3xl">
+            <Clock></Clock>
             <Greeting></Greeting>
             <WindowSize></WindowSize>
         </div>
     )
 }
 
+export function Clock() {
+    const time = useInterval(1_000)
+    return (<div>{time.toLocaleString()}</div>)
+}
+
+export function useInterval(intervalMs?: number) {
+    const [ time, setTime] = useState(new Date())
+    useEffect(() => {
+        const i = setInterval(() => {
+            setTime(new Date())
+        }, intervalMs ?? 1_000)
+        return () => clearInterval(i)
+    }, [])
+    return time
+}
+
+
 export function Greeting() {
     const size = useWindowSize()
     console.log("render greeting", size)
-    if (size.width < 500) {
-        return <div>Schmal heute</div>
-    }
+    if (size.width < 500) { return <div>Schmal heute</div> }
     return <div>Wir haben Platz</div>
 }
 
