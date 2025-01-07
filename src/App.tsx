@@ -1,33 +1,31 @@
 import { ReactNode, useState } from "react"
 import { MdArrowRight } from "react-icons/md"
 
+
+type Task = {
+    id: number, title: string, status: "NEW" | "DONE"
+}
+
 export function App() {
+    const initialTasks: Task[] = [
+        { id: 1, title: "Einkaufen", status: "NEW" },
+        { id: 2, title: "Staubsaugen", status: "NEW" },
+        { id: 3, title: "Rasenmähen", status: "NEW" },
+        { id: 4, title: "Schneeschaufeln", status: "NEW" },
+    ]
+    const [tasks, setTasks] = useState(initialTasks)
     return (
         <FoldPanel message="Message of the day">
-            <div className="text-3xl">Hello</div>
-            <Counter></Counter>
+            {tasks.map((task) => <TaskDisplay key={task.id} task={task} />)}
         </FoldPanel>
     )
 }
 
-export function Counter() {
-    const [count, setCount ] = useState({ val: 1, age: 10, smart: false})
-    return (
-        <button onClick={() => {
-            // variante 1
-            //const newCount = { val: count.val + 1 }
-
-            // variante 2
-            //const newCount = { ...count }
-            //newCount.val++
-
-            // variante 3
-            const newCount = { ...count, val: count.val + 1}
-
-            setCount(newCount)
-         }}>Change me {count.val} </button>
-    )
+export function TaskDisplay(props: { task: Task}) {
+    const { task } = props
+    return (<div>{task.title} : {task.status}</div>)
 }
+
 
 
 
