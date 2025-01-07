@@ -16,7 +16,15 @@ export function App() {
     const [tasks, setTasks] = useState(initialTasks)
     return (
         <FoldPanel message="Message of the day">
-            {tasks.map((task) => <TaskDisplay key={task.id} task={task} />)}
+            {tasks.map((task) => (
+                <div className="flex gap-2 m-2 items-center">
+                    <TaskDisplay key={task.id} task={task} />
+                    <button onClick={() => {
+                        // set task to done
+                    }} className="border border-black p-2">
+                        Set done</button>
+                </div>
+            ))}
         </FoldPanel>
     )
 }
