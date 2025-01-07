@@ -11,9 +11,21 @@ export function App() {
 }
 
 export function Counter() {
-    const [count, setCount ] = useState({ val: 1})
+    const [count, setCount ] = useState({ val: 1, age: 10, smart: false})
     return (
-        <button onClick={() => { }}>Change me {count.val} </button>
+        <button onClick={() => {
+            // variante 1
+            //const newCount = { val: count.val + 1 }
+
+            // variante 2
+            //const newCount = { ...count }
+            //newCount.val++
+
+            // variante 3
+            const newCount = { ...count, val: count.val + 1}
+
+            setCount(newCount)
+         }}>Change me {count.val} </button>
     )
 }
 
