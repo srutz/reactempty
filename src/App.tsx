@@ -17,12 +17,15 @@ export function App() {
     return (
         <FoldPanel message="Message of the day">
             {tasks.map((task) => (
-                <div className="flex gap-2 m-2 items-center">
-                    <TaskDisplay key={task.id} task={task} />
+                <div key={task.id} className="flex gap-2 m-2 items-center">
+                    <TaskDisplay task={task} />
                     <button onClick={() => {
                         // set task to done
+                        task.status = task.status == "NEW" ? "DONE" : "NEW"
+                        const newTasks = [...tasks] // flat copy of tasks[]
+                        setTasks(newTasks)
                     }} className="border border-black p-2">
-                        Set done</button>
+                        {task.status == "NEW" ? "Set done" : "Set New"}</button>
                 </div>
             ))}
         </FoldPanel>
