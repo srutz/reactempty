@@ -1,20 +1,31 @@
 import { ReactNode, useEffect } from "react"
 import { createBrowserRouter, NavLink, Outlet, RouterProvider, useLocation, useNavigate, useNavigation } from "react-router-dom"
+import { Products } from "./Products"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 const router = createBrowserRouter(
     [ { path: "/", element: <Main></Main>, children: [
         { path: "/", element: <div>At Home</div> },
+        { path: "/products", element: <Products></Products> },
         { path: "/about", element: <div>About</div> },
         { path: "/imprint", element: <div>Impressum</div> },
     ]} 
     ]
 )
+
+const client = new QueryClient()
+
 export function App() {
-    return (<RouterProvider router={router}></RouterProvider>)
+    return (
+        <QueryClientProvider client={client}>
+            <RouterProvider router={router}></RouterProvider>
+        </QueryClientProvider>
+    )
 }
 export function MenuBar() {
     return (<div className="bg-white px-6 py-2 border-b border-gray-300 flex gap-4">
         <NavLink to="/">Home</NavLink>
+        <NavLink to="/products">Products</NavLink>
         <NavLink to="/about">About</NavLink>
         <NavLink to="/imprint">Impressum</NavLink>
     </div>)}
