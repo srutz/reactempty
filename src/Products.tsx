@@ -6,16 +6,11 @@ export type ProductType = {
     description: string,
     price: number,
     category: string,
-    stock: number
+    stock: number,
+    thumbnail: string,
 }
 export type ProductResponse = { products: ProductType[] }
 
-export function Products() {
-    const { data } = useProducts()
-    return (<div className="h-1 grow bg-orange-500 overflow-auto">
-        <pre className="text-xs ">{JSON.stringify(data, null, 4)}</pre>
-    </div>)
-}
 
 export function useProducts() {
     return useQuery({
@@ -27,4 +22,19 @@ export function useProducts() {
             return data as ProductResponse
         }
     })
+}
+
+export function Products() {
+    const { data } = useProducts()
+    return (<div className="h-1 grow bg-orange-500 overflow-auto">
+        {data?.products.map((p) => (
+            <ProductDetails product={p}></ProductDetails>
+        ))}
+    </div>)
+}
+
+export type ProductDetailsProps = { product: ProductType }
+
+export function ProductDetails({ product } : ProductDetailsProps) {
+    return <div>{product.title}</div>
 }
