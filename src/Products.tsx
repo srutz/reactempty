@@ -8,6 +8,7 @@ export type ProductType = {
     category: string,
     stock: number,
     thumbnail: string,
+    rating: number,
 }
 export type ProductResponse = { products: ProductType[] }
 
@@ -46,14 +47,33 @@ export function ProductDetails({ product } : ProductDetailsProps) {
     return (
         <div className="flex gap-8 mb-8 pr-4">
             <div className="flex flex-col">
-                <img src={product.thumbnail} className="w-16 max-w-16"></img>
+                <img src={product.thumbnail} 
+                    className="motion-preset-fade w-16 max-w-16"></img>
                 <div className="self-end">{formatMoney(product.price)}</div>
             </div>
             <div className="flex flex-col">
                 <div className="font-semibold">{product.title}</div>
                 <div className="grow text-gray-500 text-sm">{product.description}</div>
-                <div className="self-end capitalize mt-2 text-sm">{product.category}</div>
+                <div className="flex justify-between">
+                    <Rating rating={product.rating}></Rating>
+                    <div className="self-end capitalize mt-2 text-sm">{product.category}</div>
+                </div>
             </div>
+        </div>
+    )
+}
+
+export type RatingProps = { rating: number}
+
+export function Rating({ rating} : RatingProps) {
+    return (
+        <div className="flex gap-1">
+            {[1,2,3,4,5].map((i) => (
+                <div className={
+                    "font-bold text-xl " +
+                    (i <= rating ? "text-yellow-600" : "text-gray-300")}
+                >*</div>
+            ))}
         </div>
     )
 }
