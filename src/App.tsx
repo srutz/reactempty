@@ -32,7 +32,7 @@ export function MenuBar() {
 
 export function Box({children } : { children: ReactNode }) {
     return (<div className="h-1 grow bg-white shadow-xl 
-        rounded-lg border border-gray-300 p-4 m-4">
+        rounded-lg border border-gray-300 p-4 m-4 flex flex-col">
         {children}
     </div>)}
 

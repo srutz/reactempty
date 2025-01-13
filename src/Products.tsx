@@ -11,16 +11,20 @@ export type ProductType = {
 export type ProductResponse = { products: ProductType[] }
 
 export function Products() {
-    const { data } = useQuery({
+    const { data } = useProducts()
+    return (<div className="h-1 grow bg-orange-500 overflow-auto">
+        <pre className="text-xs ">{JSON.stringify(data, null, 4)}</pre>
+    </div>)
+}
+
+export function useProducts() {
+    return useQuery({
         queryKey: [ "abc" ],
+        staleTime: 10_000,
         queryFn: async () => {
             const r = await fetch("https://dummyjson.com/products")
             const data = await r.json()
             return data as ProductResponse
         }
     })
-
-    return (<div className="bg-orange-500">
-        <pre>{JSON.stringify(data, null, 4)}</pre>
-    </div>)
 }
