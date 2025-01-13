@@ -45,13 +45,13 @@ export function formatMoney(n: number) {
 
 export function ProductDetails({ product } : ProductDetailsProps) {
     return (
-        <div className="flex gap-8 mb-8 pr-4">
-            <div className="flex flex-col">
+        <div className="flex gap-8 mb-8 pr-4 ">
+            <div className="max-w-32 flex flex-col">
                 <img src={product.thumbnail} 
-                    className="motion-preset-fade w-16 max-w-16"></img>
+                    className="self-center motion-preset-fade w-20 max-w-20"></img>
                 <div className="self-end">{formatMoney(product.price)}</div>
             </div>
-            <div className="flex flex-col">
+            <div className="grow flex flex-col">
                 <div className="font-semibold">{product.title}</div>
                 <div className="grow text-gray-500 text-sm">{product.description}</div>
                 <div className="flex justify-between">
