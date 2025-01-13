@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react"
 
 export function App() {
+    const counter = useCounter()
+    return (
+        <button>Button {counter}</button>
+    )
+}
+
+export function useCounter() {
     const [ counter, setCounter ] = useState(1)
     console.log("rerender", counter)
     useEffect(() => {
@@ -14,12 +21,6 @@ export function App() {
             clearInterval(i)  // cleanup
         }
     }, [ counter ])
-    const handleClick = () => {
-        console.log("clicked me")
-        setCounter(counter + 1)
-    }
-    return (
-        <button onClick={handleClick}>Button {counter}</button>
-    )
+    return counter
 }
 
