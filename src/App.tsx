@@ -1,17 +1,37 @@
 import { ReactNode, useEffect } from "react"
-import { createBrowserRouter, NavLink, Outlet, RouterProvider, useLocation, useNavigate, useNavigation } from "react-router-dom"
-import { Products } from "./Products"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { createBrowserRouter, NavLink, Outlet, RouterProvider, useLocation, useNavigate, useNavigation, useParams } from "react-router-dom"
+import { ProductDetails, Products, ProductType } from "./Products"
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 
 const router = createBrowserRouter(
     [ { path: "/", element: <Main></Main>, children: [
         { path: "/", element: <div>At Home</div> },
         { path: "/products", element: <Products></Products> },
+        { path: "/product/:id", element: <ProductPage></ProductPage> },
         { path: "/about", element: <div>About</div> },
         { path: "/imprint", element: <div>Impressum</div> },
+        { path: "*", element: <div>Not found</div> },
     ]} 
     ]
 )
+
+export function useProduct(id: number) {
+    return useQuery({
+        queryKey: [ "product", id],
+        staleTime: 60_000,
+        queryFn: async () => {
+            const r = await fetch("https://dummyjson.com/products/" + id)
+            return await r.json() as ProductType
+        }
+    })
+}
+
+export function ProductPage() {
+    const { id } = useParams()
+    const { data: product } = useProduct(Number.parseInt(id || "-1"))
+    return product && (<ProductDetails product={product}></ProductDetails>)
+}
+
 
 const client = new QueryClient()
 
