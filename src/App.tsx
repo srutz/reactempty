@@ -1,5 +1,5 @@
-import { ReactNode } from "react"
-import { createBrowserRouter, NavLink, Outlet, RouterProvider } from "react-router-dom"
+import { ReactNode, useEffect } from "react"
+import { createBrowserRouter, NavLink, Outlet, RouterProvider, useLocation, useNavigate, useNavigation } from "react-router-dom"
 
 const router = createBrowserRouter(
     [ { path: "/", element: <Main></Main>, children: [
@@ -27,6 +27,22 @@ export function Box({children } : { children: ReactNode }) {
 
 export function Main() {
     return (<div className="grow bg-gray-200 flex flex-col">
-        <MenuBar></MenuBar><Box><Outlet></Outlet></Box>
+        <MenuBar></MenuBar>
+        <Box><Outlet></Outlet></Box>
+        <Footer></Footer>
     </div>)}
+
+export function Footer() {
+    const location = useLocation()
+    const navigate = useNavigate()
+    useEffect(() => {
+        console.log("log visit: " + location.pathname)
+        if (location.pathname == "/imprint") {
+            navigate("/about")
+        }
+    }, [ location ])
+    return (<div className="a999 bg-white px-6 py-2 border-t border-gray-300">
+        {location.pathname}
+    </div>)
+}
 
