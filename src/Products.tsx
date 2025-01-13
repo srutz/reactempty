@@ -46,7 +46,7 @@ export function ProductDetails({ product } : ProductDetailsProps) {
     return (
         <div className="flex gap-8 mb-8 pr-4">
             <div className="flex flex-col">
-                <img src={product.thumbnail} className="shrink-0 w-32"></img>
+                <img src={product.thumbnail} className="w-16 max-w-16"></img>
                 <div className="self-end">{formatMoney(product.price)}</div>
             </div>
             <div className="flex flex-col">
