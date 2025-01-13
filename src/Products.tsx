@@ -26,7 +26,7 @@ export function useProducts() {
 
 export function Products() {
     const { data } = useProducts()
-    return (<div className="h-1 grow bg-orange-500 overflow-auto">
+    return (<div className="h-1 grow overflow-auto">
         {data?.products.map((p) => (
             <ProductDetails product={p}></ProductDetails>
         ))}
@@ -35,6 +35,25 @@ export function Products() {
 
 export type ProductDetailsProps = { product: ProductType }
 
+export function formatMoney(n: number) { 
+    const format = new Intl.NumberFormat('de-DE', {
+        style: "currency", currency: "EUR"
+    })
+    return format.format(n)
+}
+
 export function ProductDetails({ product } : ProductDetailsProps) {
-    return <div>{product.title}</div>
+    return (
+        <div className="flex gap-8 mb-8 pr-4">
+            <div className="flex flex-col">
+                <img src={product.thumbnail} className="shrink-0 w-32"></img>
+                <div className="self-end">{formatMoney(product.price)}</div>
+            </div>
+            <div className="flex flex-col">
+                <div className="font-semibold">{product.title}</div>
+                <div className="grow text-gray-500 text-sm">{product.description}</div>
+                <div className="self-end capitalize mt-2 text-sm">{product.category}</div>
+            </div>
+        </div>
+    )
 }
