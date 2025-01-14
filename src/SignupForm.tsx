@@ -1,30 +1,33 @@
 import { ComponentProps, FormEvent, ReactNode, useState } from "react"
 
+export type SignupFormType = {
+    firstname: string,
+    lastname: string,
+}
 export function SignupForm() {
-    console.log("render form")
-
-    const [ firstname, setFirstname ] = useState("")
-    const [ lastname, setLastname ] = useState("")
+    const [ form, setForm ] = useState({
+        firstname: "", lastname: "",
+    } as SignupFormType)
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        console.log("submitting form", firstname, lastname)
+        console.log("submitting form", form)
     }
     return (
         <form className="flex flex-col" onSubmit={handleSubmit}>
             <Label htmlFor="firstname">Firstname</Label>
             <input id="firstname" placeholder="Firstname" 
-                value={firstname}
+                value={form.firstname}
                 onChange={(e) => { setFirstname(e.target.value) }}
                 ></input>
-            {firstname.length > 20 
+            {form.firstname.length > 20 
                 ? ( <div className="text-red-600 text-xs">Echt langer Name</div>)
                 : ( <div className="text-gray-400 text-xs">
-                    Noch {20 - firstname.length} Zeichen</div>)
+                    Noch {20 - form.firstname.length} Zeichen</div>)
             }
             <Label htmlFor="lastname">Lastname</Label>
             <input id="lastname" placeholder="Lastname" 
-                value={lastname}
+                value={form.lastname}
                 onChange={(e) => { setLastname(e.target.value) }}
                 ></input>
             <button type="submit">Submit</button>
