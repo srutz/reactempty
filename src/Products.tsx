@@ -31,7 +31,7 @@ export function Products() {
     return (<div className="h-1 grow flex gap-4">
         <div className="overflow-auto">
             {data?.products.map((p) => (
-                <ProductDetails product={p}></ProductDetails>
+                <ProductDetails key={p.id} product={p}></ProductDetails>
             ))}
         </div>
         <Outlet></Outlet>
@@ -77,12 +77,12 @@ export type RatingProps = { rating: number}
 
 export function Rating({ rating} : RatingProps) {
     return (
-        <div className="flex gap-1">
+        <div className="flex gap-[2px]">
             {[1,2,3,4,5].map((i) => (
-                <div className={
+                <div key={i} className={
                     "font-bold text-xl " +
                     (i <= rating ? "text-yellow-600" : "text-gray-300")}
-                >*</div>
+                >★</div>
             ))}
         </div>
     )

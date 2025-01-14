@@ -17,13 +17,13 @@ export type FormContextProviderProps = { children: ReactNode }
 export function FormContextProvider({ children }: FormContextProviderProps) {
     const [form, setForm] = useState(() => {
         const raw = localStorage.getItem("fs")
+        const defaultValue = {
+            firstname: "", lastname: "", specialNeeds: false, city: "Gelsenkirchen"
+        } as SignupFormType
         if (raw) {
             const v = JSON.parse(raw) as SignupFormType
-            return v
+            return { ...defaultValue, ...v}
         }
-        const defaultValue = {
-            firstname: "", lastname: "", specialNeeds: false
-        } as SignupFormType
         return defaultValue
     })
     
@@ -48,10 +48,12 @@ export function useFormContext() {
 
 
 export type SignupFormType = {
-    firstname: string,
-    lastname: string,
+    firstname: string
+    lastname: string
     specialNeeds: boolean
+    city: string
 }
+
 export function SignupForm() {
     console.log("render form")
     const { form, setForm } = useFormContext()
@@ -61,11 +63,15 @@ export function SignupForm() {
             <TextInput label="Firstname" id="x"
                 placeholder="Firstname" value={form.firstname}
                 onChange={(e) => { setForm({ ...form, firstname: e.target.value }) }}
-                errorMessage={form.lastname.length > 20 && `Echt langer Name`}>
+                errorMessage={form.firstname.length > 20 && `Echt langer Name`}>
             </TextInput>
             <TextInput label="lastname" id="y"
                 placeholder="Lastname" value={form.lastname}
                 onChange={(e) => { setForm({ ...form, lastname: e.target.value }) }}>
+            </TextInput>
+            <TextInput label="Staft" id="city"
+                placeholder="Stadt" value={form.city}
+                onChange={(e) => { setForm({ ...form, city: e.target.value }) }}>
             </TextInput>
         </div>
     )
