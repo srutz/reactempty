@@ -18,7 +18,7 @@ export function SignupForm() {
         <form className="flex flex-col" onSubmit={handleSubmit}>
 
             <TextInput label="Firstname" 
-                placeholder="Firstname"
+                placeholder="Firstname" value={form.firstname}
                 onChange={(e) => { setForm({ ...form, firstname: e.target.value })}}
                 infoMessage={form.firstname.length <= 20 && `Noch ${20 - form.firstname.length} Zeichen`}
                 errorMessage={form.lastname.length > 20 && `Echt langer Name`}>
