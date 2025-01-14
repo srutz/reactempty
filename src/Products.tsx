@@ -50,7 +50,7 @@ export function ProductDetails({ product } : ProductDetailsProps) {
         navigate("/product/" + encodeURIComponent(product.id))
     }
     return (
-        <div className="flex gap-8 mb-8 pr-4" onClick={handleClick}>
+        <div className="flex gap-8 mb-8 pr-4 cursor-pointer" onClick={handleClick}>
             <div className="max-w-32 flex flex-col">
                 <img src={product.thumbnail} 
                     className="self-center motion-preset-fade w-20 max-w-20"></img>
