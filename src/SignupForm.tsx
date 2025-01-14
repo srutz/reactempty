@@ -16,17 +16,13 @@ export function SignupForm() {
     }
     return (
         <form className="flex flex-col" onSubmit={handleSubmit}>
-            <Label htmlFor="firstname">Firstname</Label>
-            <input id="firstname" placeholder="Firstname" 
-                value={form.firstname}
-                onChange={(e) => { 
-                    setForm({ ...form, firstname: e.target.value })
-                 }}
-                ></input>
-            {form.firstname.length > 20 
-                ? ( <div className="text-red-600 text-xs">Echt langer Name</div>)
-                : ( <div className="text-gray-400 text-xs">Noch {20 - form.firstname.length} Zeichen</div>)
-            }
+
+            <TextInput label="Firstname" 
+                placeholder="Firstname"
+                onChange={(e) => { setForm({ ...form, firstname: e.target.value })}}
+                infoMessage={form.firstname.length <= 20 && `Noch ${20 - form.firstname.length} Zeichen`}
+                errorMessage={form.lastname.length > 20 && `Echt langer Name`}>
+            </TextInput>
             <Label htmlFor="lastname">Lastname</Label>
             <input id="lastname" placeholder="Lastname" 
                 value={form.lastname}
