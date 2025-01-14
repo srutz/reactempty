@@ -17,6 +17,11 @@ export function SignupForm() {
                 value={firstname}
                 onChange={(e) => { setFirstname(e.target.value) }}
                 ></input>
+            {firstname.length > 20 
+                ? ( <div className="text-red-600 text-xs">Echt langer Name</div>)
+                : ( <div className="text-gray-400 text-xs">
+                    Noch {20 - firstname.length} Zeichen</div>)
+            }
             <Label htmlFor="lastname">Lastname</Label>
             <input id="lastname" placeholder="Lastname" 
                 value={lastname}
