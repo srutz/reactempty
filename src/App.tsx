@@ -3,7 +3,7 @@ import { createBrowserRouter, NavLink, Outlet, RouterProvider, useLocation, useN
 import { ProductDetails, Products, ProductType } from "./Products"
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { TransitionLink } from "./TransitionLink"
-import { SignupForm } from "./SignupForm"
+import { FormContextProvider, SignupForm } from "./SignupForm"
 
 const router = createBrowserRouter(
     [{
@@ -47,7 +47,9 @@ const client = new QueryClient()
 export function App() {
     return (
         <QueryClientProvider client={client}>
-            <RouterProvider router={router}></RouterProvider>
+            <FormContextProvider>
+                <RouterProvider router={router}></RouterProvider>
+            </FormContextProvider>
         </QueryClientProvider>
     )
 }

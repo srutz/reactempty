@@ -1,6 +1,31 @@
-import { ComponentProps, FormEvent, ReactNode, useState } from "react"
+import { ComponentProps, createContext, Dispatch, FormEvent, ReactNode, SetStateAction, useContext, useState } from "react"
 import { TextInput } from "./TextInput"
 import { CheckboxInput } from "./CheckboxInput"
+
+// Typ des Contexts
+export type FormContextType = {
+    form: SignupFormType,
+    setForm: Dispatch<SetStateAction<SignupFormType>>
+} 
+
+// Der Context selbst
+export const FormContext = createContext<FormContextType|null>(null)
+
+// Typ des Providers
+export type FormContextProviderProps = { children: ReactNode }
+
+// React Component welche den Zustand bereitstellt. Weit oben in der Hierachie
+export function FormContextProvider( {children } : FormContextProviderProps) {
+    const [ form, setForm ] = useState({
+        firstname: "", lastname: "", specialNeeds: false
+    } as SignupFormType)
+    return (
+        <FormContext.Provider value={ { form, setForm }}>
+            {children}
+        </FormContext.Provider>
+    )
+}
+
 
 export type SignupFormType = {
     firstname: string,
