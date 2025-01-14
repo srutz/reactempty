@@ -24,3 +24,7 @@ body {
 input {
     @apply border border-gray-500 px-2 py-1 rounded
 }
+
+button {
+    @apply self-center disabled:text-gray-300 disabled:bg-gray-400 bg-blue-500 hover:bg-blue-600 rounded px-4 py-1 text-white;
+}

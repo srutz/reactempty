@@ -1,5 +1,6 @@
 import { ComponentProps, FormEvent, ReactNode, useState } from "react"
 import { TextInput } from "./TextInput"
+import { CheckboxInput } from "./CheckboxInput"
 
 export type SignupFormType = {
     firstname: string,
@@ -28,17 +29,10 @@ export function SignupForm() {
                 placeholder="Lastname" value={form.lastname}
                 onChange={(e) => { setForm({ ...form, lastname: e.target.value })}}>
             </TextInput>
-            <div className="flex gap-4">
-                <label id="z">Ich habe die AGB gelesen</label>
-                <input type="checkbox" checked={form.specialNeeds} onChange={(e) => {
-                    console.log(e.target.value)
-                    setForm({ ...form, specialNeeds: e.target.checked})
-                }}></input>
-            </div>
+            <CheckboxInput id="x1" label="Ich habe die AGBs verstanden"
+                value={form.specialNeeds} 
+                onChange={(e) => setForm({...form, specialNeeds: e.target.checked})} />
             <button disabled={!form.specialNeeds} 
-    className="self-center disabled:text-gray-300 disabled:bg-gray-400 
-            bg-blue-500 hover:bg-blue-600 
-            rounded px-4 py-1 text-white"
                 type="submit">Submit</button>
         </form>
     )
