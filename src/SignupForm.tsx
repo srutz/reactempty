@@ -1,26 +1,38 @@
-import { ComponentProps, createContext, Dispatch, FormEvent, ReactNode, SetStateAction, useContext, useState } from "react"
+import { ComponentProps, createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react"
 import { TextInput } from "./TextInput"
-import { CheckboxInput } from "./CheckboxInput"
 
 // Typ des Contexts
 export type FormContextType = {
     form: SignupFormType,
     setForm: Dispatch<SetStateAction<SignupFormType>>
-} 
+}
 
 // Der Context selbst
-export const FormContext = createContext<FormContextType|null>(null)
+export const FormContext = createContext<FormContextType | null>(null)
 
 // Typ des Providers
 export type FormContextProviderProps = { children: ReactNode }
 
 // React Component welche den Zustand bereitstellt. Weit oben in der Hierachie
-export function FormContextProvider( {children } : FormContextProviderProps) {
-    const [ form, setForm ] = useState({
-        firstname: "", lastname: "", specialNeeds: false
-    } as SignupFormType)
+export function FormContextProvider({ children }: FormContextProviderProps) {
+    const [form, setForm] = useState(() => {
+        const raw = localStorage.getItem("fs")
+        if (raw) {
+            const v = JSON.parse(raw) as SignupFormType
+            return v
+        }
+        const defaultValue = {
+            firstname: "", lastname: "", specialNeeds: false
+        } as SignupFormType
+        return defaultValue
+    })
+    
+    useEffect(() => {
+        // on mount und wenn sich form geändert hat
+        localStorage.setItem("fs", JSON.stringify(form))
+    }, [ form ])
     return (
-        <FormContext.Provider value={ { form, setForm }}>
+        <FormContext.Provider value={{ form, setForm }}>
             {children}
         </FormContext.Provider>
     )
@@ -31,7 +43,7 @@ export function useFormContext() {
     if (!value) {
         throw "formcontext not defined"
     }
-    return value    
+    return value
 }
 
 
@@ -42,34 +54,20 @@ export type SignupFormType = {
 }
 export function SignupForm() {
     console.log("render form")
-    //const [ form, setForm ] = useState({
-    //    firstname: "", lastname: "", specialNeeds: false
-    //} as SignupFormType)
-
     const { form, setForm } = useFormContext()
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        console.log("send form", form)
-    }
     return (
-        <form className="flex flex-col" onSubmit={handleSubmit}>
-
+        <div className="flex flex-col">
             <TextInput label="Firstname" id="x"
                 placeholder="Firstname" value={form.firstname}
-                onChange={(e) => { setForm({ ...form, firstname: e.target.value })}}
+                onChange={(e) => { setForm({ ...form, firstname: e.target.value }) }}
                 errorMessage={form.lastname.length > 20 && `Echt langer Name`}>
             </TextInput>
             <TextInput label="lastname" id="y"
                 placeholder="Lastname" value={form.lastname}
-                onChange={(e) => { setForm({ ...form, lastname: e.target.value })}}>
+                onChange={(e) => { setForm({ ...form, lastname: e.target.value }) }}>
             </TextInput>
-            <CheckboxInput id="x1" label="Ich habe die AGBs verstanden"
-                value={form.specialNeeds} 
-                onChange={(e) => setForm({...form, specialNeeds: e.target.checked})} />
-            <button disabled={!form.specialNeeds} 
-                type="submit">Submit</button>
-        </form>
+        </div>
     )
 }
 
@@ -77,7 +75,7 @@ export type LabelProps = {
     children: ReactNode,
 } & ComponentProps<"label">
 
-export function Label({ children, ...rest } : LabelProps) {
+export function Label({ children, ...rest }: LabelProps) {
     return (
         <label {...rest}>{children}</label>
     )

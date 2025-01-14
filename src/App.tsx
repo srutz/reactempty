@@ -3,7 +3,8 @@ import { createBrowserRouter, NavLink, Outlet, RouterProvider, useLocation, useN
 import { ProductDetails, Products, ProductType } from "./Products"
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { TransitionLink } from "./TransitionLink"
-import { FormContextProvider, SignupForm } from "./SignupForm"
+import { FormContextProvider, SignupForm, useFormContext } from "./SignupForm"
+import { SignupForm2 } from "./SignupForm2"
 
 const router = createBrowserRouter(
     [{
@@ -15,6 +16,7 @@ const router = createBrowserRouter(
                 ]
             },
             { path: "/signup", element: <SignupForm></SignupForm> },
+            { path: "/signup2", element: <SignupForm2></SignupForm2> },
             { path: "/about", element: <div>About</div> },
             { path: "/imprint", element: <div>Impressum</div> },
             { path: "*", element: <div>Not found</div> },
@@ -57,6 +59,7 @@ export function MenuBar() {
     return (<div className="bg-white px-6 py-2 border-b border-gray-300 flex gap-4">
         <TransitionLink to="/">Home</TransitionLink>
         <TransitionLink to="/signup">Signup</TransitionLink>
+        <TransitionLink to="/signup2">Signup-Review</TransitionLink>
         <TransitionLink to="/products">Products</TransitionLink>
         <TransitionLink to="/about">About</TransitionLink>
         <TransitionLink to="/imprint">Impressum</TransitionLink>
@@ -79,12 +82,12 @@ export function Main() {
 }
 
 export function Footer() {
-    const location = useLocation()
-    useEffect(() => {
-        console.log("log visit: " + location.pathname)
-    }, [location])
+    const { form } = useFormContext()
+
     return (<div className="bg-white px-6 py-2 border-t border-gray-300">
-        {location.pathname}
+        <div className="text-green-600 text-sm">
+            {form.firstname} {form.lastname}
+        </div>
     </div>)
 }
 
