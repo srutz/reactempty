@@ -1,4 +1,5 @@
 import { ComponentProps, FormEvent, ReactNode, useState } from "react"
+import { TextInput } from "./TextInput"
 
 export type SignupFormType = {
     firstname: string,
@@ -17,7 +18,7 @@ export function SignupForm() {
     return (
         <form className="flex flex-col" onSubmit={handleSubmit}>
 
-            <TextInput label="Firstname" 
+            <TextInput label="Firstname"  id="x"
                 placeholder="Firstname" value={form.firstname}
                 onChange={(e) => { setForm({ ...form, firstname: e.target.value })}}
                 infoMessage={form.firstname.length <= 20 && `Noch ${20 - form.firstname.length} Zeichen`}
