@@ -3,6 +3,7 @@ import { createBrowserRouter, NavLink, Outlet, RouterProvider, useLocation, useN
 import { ProductDetails, Products, ProductType } from "./Products"
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { TransitionLink } from "./TransitionLink"
+import { SignupForm } from "./SignupForm"
 
 const router = createBrowserRouter(
     [{
@@ -13,6 +14,7 @@ const router = createBrowserRouter(
                     { path: "/products/:id", element: <ProductPage></ProductPage> },
                 ]
             },
+            { path: "/signup", element: <SignupForm></SignupForm> },
             { path: "/about", element: <div>About</div> },
             { path: "/imprint", element: <div>Impressum</div> },
             { path: "*", element: <div>Not found</div> },
@@ -52,6 +54,7 @@ export function App() {
 export function MenuBar() {
     return (<div className="bg-white px-6 py-2 border-b border-gray-300 flex gap-4">
         <TransitionLink to="/">Home</TransitionLink>
+        <TransitionLink to="/signup">Signup</TransitionLink>
         <TransitionLink to="/products">Products</TransitionLink>
         <TransitionLink to="/about">About</TransitionLink>
         <TransitionLink to="/imprint">Impressum</TransitionLink>
