@@ -26,6 +26,14 @@ export function FormContextProvider( {children } : FormContextProviderProps) {
     )
 }
 
+export function useFormContext() {
+    const value = useContext(FormContext)
+    if (!value) {
+        throw "formcontext not defined"
+    }
+    return value    
+}
+
 
 export type SignupFormType = {
     firstname: string,
@@ -34,9 +42,11 @@ export type SignupFormType = {
 }
 export function SignupForm() {
     console.log("render form")
-    const [ form, setForm ] = useState({
-        firstname: "", lastname: "", specialNeeds: false
-    } as SignupFormType)
+    //const [ form, setForm ] = useState({
+    //    firstname: "", lastname: "", specialNeeds: false
+    //} as SignupFormType)
+
+    const { form, setForm } = useFormContext()
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
