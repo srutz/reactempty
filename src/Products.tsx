@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { useNavigate } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 
 export type ProductType = {
     id: number,
@@ -28,14 +28,17 @@ export function useProducts() {
 
 export function Products() {
     const { data } = useProducts()
-    return (<div className="h-1 grow overflow-auto">
-        {data?.products.map((p) => (
-            <ProductDetails product={p}></ProductDetails>
-        ))}
-    </div>)
+    return (<div className="h-1 grow flex gap-4">
+        <div className="overflow-auto">
+            {data?.products.map((p) => (
+                <ProductDetails product={p}></ProductDetails>
+            ))}
+        </div>
+        <Outlet></Outlet>
+    </div>
+    )
 }
 
-export type ProductDetailsProps = { product: ProductType }
 
 export function formatMoney(n: number) { 
     const format = new Intl.NumberFormat('de-DE', {
@@ -44,10 +47,12 @@ export function formatMoney(n: number) {
     return format.format(n)
 }
 
-export function ProductDetails({ product } : ProductDetailsProps) {
+export type ProductDetailsProps = { product: ProductType, details?: boolean }
+
+export function ProductDetails({ product, details } : ProductDetailsProps) {
     const navigate = useNavigate()
     const handleClick= () => {
-        navigate("/product/" + encodeURIComponent(product.id))
+        navigate("/products/" + encodeURIComponent(product.id))
     }
     return (
         <div className="flex gap-8 mb-8 pr-4 cursor-pointer" onClick={handleClick}>
@@ -57,7 +62,7 @@ export function ProductDetails({ product } : ProductDetailsProps) {
                 <div className="self-end">{formatMoney(product.price)}</div>
             </div>
             <div className="grow flex flex-col">
-                <div className="font-semibold">{product.title}</div>
+                <div className={"font-semibold " + (details ? "text-4xl" : "")}>{product.title}</div>
                 <div className="grow text-gray-500 text-sm">{product.description}</div>
                 <div className="flex justify-between">
                     <Rating rating={product.rating}></Rating>

@@ -8,8 +8,11 @@ const router = createBrowserRouter(
     [{
         path: "/", element: <Main></Main>, children: [
             { path: "/", element: <div>At Home</div> },
-            { path: "/products", element: <Products></Products> },
-            { path: "/product/:id", element: <ProductPage></ProductPage> },
+            {
+                path: "/products", element: <Products></Products>, children: [
+                    { path: "/products/:id", element: <ProductPage></ProductPage> },
+                ]
+            },
             { path: "/about", element: <div>About</div> },
             { path: "/imprint", element: <div>Impressum</div> },
             { path: "*", element: <div>Not found</div> },
@@ -33,7 +36,7 @@ export function ProductPage() {
     const { id } = useParams()
     const { data: product } = useProduct(Number.parseInt(id || "-1"))
     return product && (
-        <ProductDetails product={product}></ProductDetails>)
+        <ProductDetails details product={product}></ProductDetails>)
 }
 
 
