@@ -1,11 +1,9 @@
-import { ReactNode } from "react";
 
 export function App() {
-    return (
+    const names = [ "Schalke04", "BVB", "Werder", "1.FC Köln"]
+    return ( 
         <div className="text-3xl">
-            <Box extra="abc"></Box>
-            <Box extra="defg"></Box>
-            <Box></Box>
+            {names.map((n) => (<Box extra={n}></Box>))}
         </div>
     )}
 
