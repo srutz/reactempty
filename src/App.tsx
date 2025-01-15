@@ -15,11 +15,20 @@ function Box(props : { extra?: string}) {
 
     return (
         <div className="m-4 p-4 rounded-lg shadow-xl
-            border border-gray-300
-            bg-white flex flex-col motion-preset-slide">
+            border border-gray-300 cursor-pointer select-none
+            hover:underline
+            bg-white flex flex-col motion-preset-slide"
+            onClick={() => {
+                setCounter(counter + 1)
+                setCounter(counter + 1)
+                setCounter(counter + 1)
+            }}
+            >
                 {props.extra}{" "}
                 Counter: {counter}
+                {counter > 10 && 
+                    <div className="text-red-700 text-sm">Zu hoch!!</div>
+                }
         </div>
-
     )
 }
