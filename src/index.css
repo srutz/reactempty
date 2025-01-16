@@ -8,6 +8,7 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    @apply bg-gray-300;
 }
 
 #root {

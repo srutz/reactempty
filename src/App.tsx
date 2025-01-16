@@ -10,8 +10,40 @@ export type Product = {
 }
 export type ProductPanelProps = { product: Product }
 
+function formatMoney(n: number) {
+    const nf = new Intl.NumberFormat("de-DE", {
+        currency: "EUR", 
+        style: "currency" })
+    return nf.format(n)
+}
+
 export function ProductPanel(props: ProductPanelProps) {
-    return <div></div>
+    const { product } = props
+    return (
+        <div className="bg-white shadow-xl p-4 m-4 rounded-lg flex gap-2">
+            <div className="flex flex-col gap-2">
+                { /* image + price */ }
+                <img src={product.thumbnail} className="w-48"></img>
+                <div className="font-bold">{formatMoney(product.price)}</div>
+            </div>
+            <div className="flex flex-col gap-2">
+                <div className="font-bold">{product.title}</div>
+                <div className="text-gray-600">{product.description}</div>
+                <Rating rating={product.rating}></Rating>
+            </div>
+        </div>)
+}
+
+export type RatingProps = { rating: number }
+export function Rating(props: RatingProps) {
+    return (
+        <div className="flex">
+            {[1,2,3,4,5].map((i) => (
+                <div className={(i < props.rating ? "text-yellow-500" : "" 
+                    ) + " text-2xl"}>★</div>
+            ))}
+        </div>
+    )
 }
 
 export function App() {
