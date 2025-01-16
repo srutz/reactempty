@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 
 export type Product = {
@@ -53,14 +54,14 @@ export function Rating(props: RatingProps) {
     return (
         <div className="self-end flex">
             {[1,2,3,4,5].map((i) => (
-                <div className={(i < props.rating ? "text-yellow-500" : "" 
+                <div key={i} className={(i < props.rating ? "text-yellow-500" : "" 
                     ) + " text-2xl"}>★</div>
             ))}
         </div>
     )
 }
 
-export function useProduct(id: number) {
+export function useProduct_(id: number) {
     const [ product, setProduct] = useState<Product>()
     useEffect(() => {
         (async () => {
@@ -71,6 +72,19 @@ export function useProduct(id: number) {
     }, [])
     return product
 }
+
+export function useProduct(id: number) {
+    const { data } = useQuery({
+        queryKey: [ "product", id ],
+        queryFn: async() => {
+            const result = await fetch("https://dummyjson.com/product/" + id)
+            const d = await result.json()
+            return d as Product
+        }
+    })
+    return data
+}
+
 
 export function App() {
     const product = useProduct(17)
