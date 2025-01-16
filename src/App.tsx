@@ -106,12 +106,13 @@ export function useProducts(limit: number, skip?: number) {
 }
 
 export function App() {
-    const [limit, setLimit ] = useState(2)
+    const CHUNKSIZE = 10
+    const [limit, setLimit ] = useState(CHUNKSIZE)
     const { data } = useProducts(limit)
     console.log("render app", data)
     return (
         <div className="flex flex-col gap-4 overflow-y-auto p-4">
-            <button onClick={() => setLimit(limit +2)} >Load more</button>
+            <button onClick={() => setLimit(limit + CHUNKSIZE)} >Load more</button>
             <div className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
                 {data?.products.map((p) => <ProductPanel key={p.id} product={p} />)}
             </div>
