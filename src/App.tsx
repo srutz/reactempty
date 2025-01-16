@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 export type Product = {
     id: number,
@@ -105,7 +106,7 @@ export function useProducts(limit: number, skip?: number) {
     return { data: data, refetch }
 }
 
-export function App() {
+export function ProductsPage() {
     const CHUNKSIZE = 10
     const [limit, setLimit ] = useState(CHUNKSIZE)
     const { data } = useProducts(limit)
@@ -119,5 +120,20 @@ export function App() {
         </div>
     )
 }
+
+export function AboutPage() {
+    return (<div>About</div>)
+}
+
+const router = createBrowserRouter([
+    { path: "/", element: <ProductsPage></ProductsPage> }, 
+    { path: "/about", element: <AboutPage></AboutPage> }, 
+    { path: "/imprint", element: <div>Imprint</div> }, 
+])
+
+export function App() {
+    return (<RouterProvider router={router}></RouterProvider>)
+}
+
 
 
