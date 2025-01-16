@@ -8,6 +8,11 @@ export type Product = {
     price: number,
     thumbnail: string
 }
+export type ProductPanelProps = { product: Product }
+
+export function ProductPanel(props: ProductPanelProps) {
+    return <div></div>
+}
 
 export function App() {
     const [ product, setProduct] = useState<Product>()
@@ -20,7 +25,8 @@ export function App() {
     }, [])
     if (!product) { return <div></div> }
     return (
-        <pre className="">{JSON.stringify(product,null,4)}</pre>
+        <ProductPanel product={product} ></ProductPanel>
     )
 }
+
 
