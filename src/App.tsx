@@ -16,6 +16,15 @@ function formatMoney(n: number) {
     return nf.format(n)
 }
 
+export function ProductImage({ src} : { src: string}) {
+    const [loaded,setLoaded] = useState(false)
+    return (
+        <div className={"w-32 " + (loaded ? "motion-preset-pop" : "invisible")}>
+            <img src={src} onLoad={() => setLoaded(true)}></img>
+        </div>                
+    )
+}
+
 export type ProductPanelProps = { product?: Product }
 export function ProductPanel(props: ProductPanelProps) {
     const { product } = props
@@ -25,15 +34,14 @@ export function ProductPanel(props: ProductPanelProps) {
     return (
         <div className="bg-white shadow-xl p-4 m-4 rounded-lg flex gap-8">
             <div className="flex flex-col gap-2"> { /* image + price */ }
-                <div className="w-32">
-                    <img src={product.thumbnail} ></img>
-                </div>                
+                <ProductImage src={product.thumbnail}></ProductImage>
                 <div className="grow"></div>
                 <div className="font-bold">{formatMoney(product.price)}</div>
             </div>
             <div className="flex flex-col gap-2"> { /* title + description */}
-                <div className="font-bold">{product.title}</div>
-                <div className="text-gray-600">{product.description}</div>
+                <div className="font-bold motion-preset-slide-right"
+                    >{product.title}</div>
+                <div className="text-gray-600 motion-preset-slide-right motion-delay-500">{product.description}</div>
                 <div className="grow"></div>
                 <Rating rating={product.rating}></Rating>
             </div>
