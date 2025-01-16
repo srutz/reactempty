@@ -8,7 +8,6 @@ export type Product = {
     price: number,
     thumbnail: string
 }
-export type ProductPanelProps = { product: Product }
 
 function formatMoney(n: number) {
     const nf = new Intl.NumberFormat("de-DE", {
@@ -17,12 +16,18 @@ function formatMoney(n: number) {
     return nf.format(n)
 }
 
+export type ProductPanelProps = { product?: Product }
 export function ProductPanel(props: ProductPanelProps) {
     const { product } = props
+    if (!product) {
+        return <div></div>
+    }
     return (
         <div className="bg-white shadow-xl p-4 m-4 rounded-lg flex gap-8">
             <div className="flex flex-col gap-2"> { /* image + price */ }
-                <img src={product.thumbnail} className="w-64"></img>
+                <div className="w-32">
+                    <img src={product.thumbnail} ></img>
+                </div>                
                 <div className="grow"></div>
                 <div className="font-bold">{formatMoney(product.price)}</div>
             </div>
@@ -47,18 +52,26 @@ export function Rating(props: RatingProps) {
     )
 }
 
-export function App() {
+export function useProduct(id: number) {
     const [ product, setProduct] = useState<Product>()
     useEffect(() => {
         (async () => {
-            const result = await fetch("https://dummyjson.com/product/12")
+            const result = await fetch("https://dummyjson.com/product/" + id)
             const data = await result.json()
             setProduct(data)
         })()
     }, [])
-    if (!product) { return <div></div> }
+    return product
+}
+
+export function App() {
+    const product = useProduct(17)
+    const product2 = useProduct(45)
     return (
-        <ProductPanel product={product} ></ProductPanel>
+        <>
+            <ProductPanel product={product} ></ProductPanel>
+            <ProductPanel product={product2} ></ProductPanel>
+        </>
     )
 }
 
