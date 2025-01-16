@@ -33,7 +33,7 @@ export function ProductPanel(props: ProductPanelProps) {
         return <div></div>
     }
     return (
-        <div className="bg-white shadow-xl p-4 m-4 rounded-lg flex gap-8">
+        <div className="w-[400px] bg-white shadow-xl p-4 m-4 rounded-lg flex gap-8">
             <div className="flex flex-col gap-2"> { /* image + price */ }
                 <ProductImage src={product.thumbnail}></ProductImage>
                 <div className="grow"></div>
@@ -91,36 +91,30 @@ export function useProduct(id: number) {
 export function useProducts(limit: number, skip?: number) {
     const { data, refetch } = useQuery({
         queryKey: [ "products", limit, skip ],
+        placeholderData: (prev) => prev,
         queryFn: async() => {
             const params = new URLSearchParams()
-            if (skip) {
-                params.set("skip", skip.toString())
-            }
+            if (skip) params.set("skip", skip.toString())
             params.set("limit", limit.toString())
             const result = await fetch("https://dummyjson.com/products"
                 + "?" + params.toString())
             const d = await result.json()
-            //return d.products as Product[]
             return d as { products: Product[] }
         }
     })
-    return {
-        data: data,
-        refetch
-    }
-
+    return { data: data, refetch }
 }
 
 export function App() {
-    const { data: product, refetch } = useProduct(11)
-    const a: JSX.Element[] = []
-    for (let i = 1; i <= 20; i++) {
-        a.push(<ProductPanel key={i} product={product}></ProductPanel>)
-    }
+    const [limit, setLimit ] = useState(2)
+    const { data } = useProducts(limit)
+    console.log("render app", data)
     return (
-        <div className="flex flex-col overflow-y-auto">
-            <button onClick={() => refetch()} >Reload</button>
-            {a}
+        <div className="flex flex-col gap-4 overflow-y-auto p-4">
+            <button onClick={() => setLimit(limit +2)} >Load more</button>
+            <div className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
+                {data?.products.map((p) => <ProductPanel key={p.id} product={p} />)}
+            </div>
         </div>
     )
 }
