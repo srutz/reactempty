@@ -88,6 +88,29 @@ export function useProduct(id: number) {
     }
 }
 
+export function useProducts(limit: number, skip?: number) {
+    const { data, refetch } = useQuery({
+        queryKey: [ "products", limit, skip ],
+        queryFn: async() => {
+            const params = new URLSearchParams()
+            if (skip) {
+                params.set("skip", skip.toString())
+            }
+            params.set("limit", limit.toString())
+            const result = await fetch("https://dummyjson.com/products"
+                + "?" + params.toString())
+            const d = await result.json()
+            //return d.products as Product[]
+            return d as { products: Product[] }
+        }
+    })
+    return {
+        data: data,
+        refetch
+    }
+
+}
+
 export function App() {
     const { data: product, refetch } = useProduct(11)
     const a: JSX.Element[] = []
