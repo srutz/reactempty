@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, NavLink, Outlet, RouterProvider } from "react-router-dom"
 
 export type Product = {
     id: number,
@@ -41,9 +41,9 @@ export function ProductPanel(props: ProductPanelProps) {
                 <div className="font-bold">{formatMoney(product.price)}</div>
             </div>
             <div className="flex flex-col gap-2"> { /* title + description */}
-                <div className="font-bold motion-preset-slide-right"
+                <div className="font-bold "
                     >{product.title}</div>
-                <div className="text-gray-600 motion-preset-slide-right motion-delay-500">{product.description}</div>
+                <div className="text-gray-600">{product.description}</div>
                 <div className="grow"></div>
                 <Rating rating={product.rating}></Rating>
             </div>
@@ -93,6 +93,7 @@ export function useProducts(limit: number, skip?: number) {
     const { data, refetch } = useQuery({
         queryKey: [ "products", limit, skip ],
         placeholderData: (prev) => prev,
+        staleTime: 60_000,
         queryFn: async() => {
             const params = new URLSearchParams()
             if (skip) params.set("skip", skip.toString())
@@ -112,7 +113,7 @@ export function ProductsPage() {
     const { data } = useProducts(limit)
     console.log("render app", data)
     return (
-        <div className="grow flex flex-col gap-4 overflow-y-auto p-4">
+        <div className="grow flex flex-col gap-4 overflow-y-auto py-2">
             <button onClick={() => setLimit(limit + CHUNKSIZE)} >Load more</button>
             <div className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
                 {data?.products.map((p) => <ProductPanel key={p.id} product={p} />)}
@@ -125,10 +126,21 @@ export function AboutPage() {
     return (<div>About</div>)
 }
 
+export function MenuBar() {
+    return (
+        <div className="menubar flex gap-2
+                border-b border-gray-400 shadow
+                items-center bg-white px-4 py-2">
+            <NavLink to="/">Home</NavLink>
+            <NavLink to="/about">About</NavLink>
+            <NavLink to="/imprint">Imprint</NavLink>
+        </div>)
+}
+
 export function MainGui() {
     return (
         <div className="grow flex flex-col">
-            <div className="bg-white h-16"></div>
+            <MenuBar></MenuBar>
             <div className="h-1 grow flex flex-col">
                 <Outlet></Outlet>
             </div>
