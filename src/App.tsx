@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 
 export type Product = {
     id: number,
@@ -112,7 +112,7 @@ export function ProductsPage() {
     const { data } = useProducts(limit)
     console.log("render app", data)
     return (
-        <div className="flex flex-col gap-4 overflow-y-auto p-4">
+        <div className="grow flex flex-col gap-4 overflow-y-auto p-4">
             <button onClick={() => setLimit(limit + CHUNKSIZE)} >Load more</button>
             <div className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
                 {data?.products.map((p) => <ProductPanel key={p.id} product={p} />)}
@@ -125,10 +125,23 @@ export function AboutPage() {
     return (<div>About</div>)
 }
 
+export function MainGui() {
+    return (
+        <div className="grow flex flex-col">
+            <div className="bg-white h-16"></div>
+            <div className="h-1 grow flex flex-col">
+                <Outlet></Outlet>
+            </div>
+        </div>
+    )
+}
+
 const router = createBrowserRouter([
-    { path: "/", element: <ProductsPage></ProductsPage> }, 
-    { path: "/about", element: <AboutPage></AboutPage> }, 
-    { path: "/imprint", element: <div>Imprint</div> }, 
+    { path: "/", element: <MainGui></MainGui>, children: [
+        { path: "/", element: <ProductsPage></ProductsPage> }, 
+        { path: "/about", element: <AboutPage></AboutPage> }, 
+        { path: "/imprint", element: <div>Imprint</div> }, 
+    ] }, 
 ])
 
 export function App() {
