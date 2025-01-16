@@ -12,13 +12,11 @@ export type Product = {
 export function App() {
     const [ product, setProduct] = useState<Product>()
     useEffect(() => {
-        fetch("https://dummyjson.com/product/17").
-        then((result) => {
-            return result.json()
-        }).
-        then((data) => {
+        (async () => {
+            const result = await fetch("https://dummyjson.com/product/17")
+            const data = await result.json()
             setProduct(data)
-        })
+        })()
     }, [])
     if (!product) { return <div></div> }
     return (
