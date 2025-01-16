@@ -74,7 +74,7 @@ export function useProduct_(id: number) {
 }
 
 export function useProduct(id: number) {
-    const { data } = useQuery({
+    const { data, refetch } = useQuery({
         queryKey: [ "product", id ],
         queryFn: async() => {
             const result = await fetch("https://dummyjson.com/product/" + id)
@@ -82,18 +82,23 @@ export function useProduct(id: number) {
             return d as Product
         }
     })
-    return data
+    return {
+        data: data,
+        refetch
+    }
 }
 
-
 export function App() {
-    const product = useProduct(17)
-    const product2 = useProduct(45)
+    const { data: product, refetch } = useProduct(11)
+    const a: JSX.Element[] = []
+    for (let i = 1; i <= 20; i++) {
+        a.push(<ProductPanel key={i} product={product}></ProductPanel>)
+    }
     return (
-        <>
-            <ProductPanel product={product} ></ProductPanel>
-            <ProductPanel product={product2} ></ProductPanel>
-        </>
+        <div className="flex flex-col overflow-y-auto">
+            <button onClick={() => refetch()} >Reload</button>
+            {a}
+        </div>
     )
 }
 
