@@ -107,13 +107,28 @@ export function useProducts(limit: number, skip?: number) {
     return { data: data, refetch }
 }
 
+export function useInterval(periodMs: number, n?: number) {
+    const [trigger,setTrigger ] = useState(1)
+    useEffect(() => {
+        const id = setInterval(() => {
+            setTrigger((prev) => {
+                return !n || prev < n ? prev + 1 : prev
+            })
+        }, periodMs)
+        return () => clearInterval(id)
+    }, [ ])
+    return trigger
+} 
+
 export function ProductsPage() {
     const CHUNKSIZE = 10
+    useInterval(1_000)
     const [limit, setLimit ] = useState(CHUNKSIZE)
     const { data } = useProducts(limit)
     console.log("render app", data)
     return (
         <div className="grow flex flex-col gap-4 overflow-y-auto py-2">
+            <div>{new Date().toLocaleString()}</div>
             <button onClick={() => setLimit(limit + CHUNKSIZE)} >Load more</button>
             <div className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
                 {data?.products.map((p) => <ProductPanel key={p.id} product={p} />)}
