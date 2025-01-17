@@ -1,7 +1,7 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
-import { createBrowserRouter, createHashRouter, NavLink, Outlet, RouterProvider, useLoaderData, useNavigate } from "react-router-dom"
+import { createHashRouter, NavLink, Outlet, RouterProvider, useLoaderData, useNavigate } from "react-router-dom"
 import { ProductDetailsView } from "./ProductDetails"
 import { Registration } from "./Registration"
 

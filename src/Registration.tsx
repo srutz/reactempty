@@ -1,19 +1,30 @@
 import { HTMLInputTypeAttribute, ReactNode, useState } from "react"
 
+
+
+
 type MyHTMLInputTypeAttribute = HTMLInputTypeAttribute
 
+export type FormType = {
+    firstname: string, lastname: string, email: string,
+}
 
 export function Registration() {
-    const [firstname, setFirstname] = useState("")
-    const [lastname, setLastname] = useState("")
-    const [email, setEmail] = useState("")
-    console.log("rerender form", lastname, firstname)
+    const [form,setForm] = useState<FormType>({
+        email: "", firstname: "", lastname: ""
+    })
     return (
         <form className="m-4 p-4 grid grid-cols-[auto_1fr] gap-2 items-baseline">
-            <InputField id="i1" label="Firstname" value={firstname} onChange={(v) => setFirstname(v)} />
-            <InputField id="i2" label="Lastname" value={lastname} onChange={(v) => setLastname(v)} />
-            <InputField type="email" id="i3" label="E-Mail" value={email} onChange={(v) => setEmail(v)} 
-                errorMessage={!email.endsWith(".de") && "Only german emails allowed."} />
+            <InputField id="i1" label="Firstname" value={form.firstname} onChange={(v) => {
+                setForm({...form, firstname: v})
+            }} />
+            <InputField id="i2" label="Lastname" value={form.lastname} onChange={(v) => {
+                setForm({...form, lastname: v})
+            }} />
+            <InputField type="email" id="i3" label="E-Mail" value={form.email} onChange={(v) => {
+                setForm({...form, email: v})                
+            }} 
+                errorMessage={!form.email.endsWith(".de") && "Only german emails allowed."} />
         </form>
     )
 }
