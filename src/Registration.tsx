@@ -36,19 +36,33 @@ export function FormContextProvider({ children } : { children: ReactNode}) {
     return (<FormContext.Provider value={{ form, setForm }}>{children}</FormContext.Provider>)
 }
 
+export function useFormContext() {
+    const o = useContext(FormContext)
+    if (!o) {
+        throw "context provider"
+    }
+    return o    
+}
+
 
 
 export function Registration() {
-    const o = useContext(FormContext)
-    if (!o) {
-        return <div>no context</div>
-    }
-    const { form, setForm } = o
+    const { form, setForm } = useFormContext()
     return (
         <form className="m-4 p-4 grid grid-cols-[auto_1fr] gap-2 items-baseline">
             <InputField id="i1" label="Firstname" value={form.firstname} onChange={(v) => {
                 setForm({...form, firstname: v})
             }} />
+            <InputField id="i2" label="Lastname" value={form.lastname} onChange={(v) => {
+                setForm({...form, lastname: v})
+            }} />
+        </form>
+    )
+}
+export function Registration2() {
+    const { form, setForm } = useFormContext()
+    return (
+        <form className="m-4 p-4 grid grid-cols-[auto_1fr] gap-2 items-baseline">
             <InputField id="i2" label="Lastname" value={form.lastname} onChange={(v) => {
                 setForm({...form, lastname: v})
             }} />
@@ -59,6 +73,7 @@ export function Registration() {
         </form>
     )
 }
+
 export function ErrorMessage(props: { children: ReactNode}) {
     return (<div className="text-sm text-red-600">{props.children}</div>)
 }
