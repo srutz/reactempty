@@ -132,7 +132,7 @@ export function useInterval(periodMs: number, n?: number) {
 } 
 
 export function ProductsPage() {
-    const CHUNKSIZE = 2
+    const CHUNKSIZE = 10
     const [limit, setLimit ] = useState(CHUNKSIZE)
     const [skip, setSkip] = useState(0)
     const [products,setProducts] = useState<Product[]>([])
