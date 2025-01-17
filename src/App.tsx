@@ -12,7 +12,7 @@ export type Product = {
     thumbnail: string
 }
 
-function formatMoney(n: number) {
+export function formatMoney(n: number) {
     const nf = new Intl.NumberFormat("de-DE", {
         currency: "EUR", 
         style: "currency" })
