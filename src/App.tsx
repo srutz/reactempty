@@ -1,7 +1,8 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
-import { createBrowserRouter, NavLink, Outlet, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, NavLink, Outlet, RouterProvider, useNavigate } from "react-router-dom"
+import { ProductDetailsView } from "./ProductDetails"
 
 export type Product = {
     id: number,
@@ -30,12 +31,19 @@ export function ProductImage({ src} : { src: string}) {
 
 export type ProductPanelProps = { product?: Product }
 export function ProductPanel(props: ProductPanelProps) {
+    const navigate = useNavigate()
     const { product } = props
     if (!product) {
         return <div></div>
     }
+    const handleClick = () => {
+        //location.href = "/product/" + encodeURIComponent(product.id)
+        navigate("/product/" + encodeURIComponent(product.id))
+    }
     return (
-        <div className="w-[400px] bg-white shadow-xl p-4 m-4 rounded-lg flex gap-8">
+        <div className="w-[400px] bg-white shadow-xl p-4 m-4 rounded-lg flex gap-8 
+                    cursor-pointer border border-white hover:border hover:border-gray-400"
+                onClick={handleClick}>
             <div className="flex flex-col gap-2"> { /* image + price */ }
                 <ProductImage src={product.thumbnail}></ProductImage>
                 <div className="grow"></div>
@@ -77,6 +85,7 @@ export function useProduct_(id: number) {
 export function useProduct(id: number) {
     const { data, refetch } = useQuery({
         queryKey: [ "product", id ],
+        staleTime: 3_600 * 1_000,
         queryFn: async() => {
             const result = await fetch("https://dummyjson.com/product/" + id)
             const d = await result.json()
@@ -94,7 +103,7 @@ export function useProducts(limit: number, skip?: number) {
     const { data, refetch } = useQuery({
         queryKey: [ "products", limit, skip ],
         //placeholderData: (prev) => prev,
-        //staleTime: 60_000,
+        staleTime: 600_000,
         queryFn: async() => {
             const params = new URLSearchParams()
             if (skip) params.set("skip", skip.toString())
@@ -181,6 +190,7 @@ export function MainGui() {
 const router = createBrowserRouter([
     { path: "/", element: <MainGui></MainGui>, children: [
         { path: "/", element: <ProductsPage></ProductsPage> }, 
+        { path: "/product/:id", element: <ProductDetailsView /> }, 
         { path: "/about", element: <AboutPage></AboutPage> }, 
         { path: "/imprint", element: <div>Imprint</div> }, 
         { path: "/*", element: <div>Alas, not found</div> }, 

@@ -1,13 +1,14 @@
+import { useParams } from "react-router-dom"
 import { formatMoney, ProductImage, Rating, useProduct } from "./App"
 
 export function ProductDetailsView() {
-    const id = 33
-    const { data: product } = useProduct(id)
+    const { id } = useParams()
+    const { data: product } = useProduct(Number.parseInt(id ?? "-1"))
     if (!product) {
         return <div></div>
     }
     return (
-        <div className="w-[400px] bg-white shadow-xl p-4 m-4 rounded-lg flex gap-8">
+        <div className="self-center max-w-[800px] bg-white shadow-xl p-4 m-4 rounded-lg flex gap-8">
             <div className="flex flex-col gap-2"> { /* image + price */ }
                 <ProductImage src={product.thumbnail}></ProductImage>
                 <div className="grow"></div>
