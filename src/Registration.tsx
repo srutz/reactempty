@@ -1,4 +1,5 @@
-import { HTMLInputTypeAttribute, ReactNode, useEffect, useState } from "react"
+import { createContext, Dispatch, HTMLInputTypeAttribute, ReactNode, SetStateAction, useContext, useEffect, useState } from "react"
+import { Form } from "react-router-dom"
 
 
 
@@ -9,7 +10,18 @@ export type FormType = {
     firstname: string, lastname: string, email: string,
 }
 
-export function Registration() {
+
+
+
+
+export type FormContextType = {
+    form: FormType,
+    setForm: Dispatch<SetStateAction<FormType>>
+}
+
+export const FormContext = createContext<FormContextType|null>(null)
+
+export function FormContextProvider({ children } : { children: ReactNode}) {
     const [form,setForm] = useState<FormType>(() => { 
         const v = {
             email: "", firstname: "", lastname: ""
@@ -21,6 +33,17 @@ export function Registration() {
     useEffect(() => {
         localStorage.setItem("st", JSON.stringify(form, null, 4))
     }, [form])
+    return (<FormContext.Provider value={{ form, setForm }}>{children}</FormContext.Provider>)
+}
+
+
+
+export function Registration() {
+    const o = useContext(FormContext)
+    if (!o) {
+        return <div>no context</div>
+    }
+    const { form, setForm } = o
     return (
         <form className="m-4 p-4 grid grid-cols-[auto_1fr] gap-2 items-baseline">
             <InputField id="i1" label="Firstname" value={form.firstname} onChange={(v) => {

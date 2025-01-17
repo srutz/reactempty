@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { createHashRouter, NavLink, Outlet, RouterProvider, useLoaderData, useNavigate } from "react-router-dom"
 import { ProductDetailsView } from "./ProductDetails"
-import { Registration } from "./Registration"
+import { FormContext, FormContextProvider, Registration } from "./Registration"
 
 export type Product = {
     id: number,
@@ -227,7 +227,12 @@ const router = createHashRouter([
 ])
 
 export function App() {
-    return (<RouterProvider router={router}></RouterProvider>)
+    return (
+        <FormContextProvider>
+            <RouterProvider router={router}>
+            </RouterProvider>
+        </FormContextProvider>
+    )
 }
 
 
