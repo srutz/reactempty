@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { formatMoney, ProductImage, Rating, useProduct } from "./App"
 import { Modal } from "./Modal"
 
+
 export function ProductDetailsView() {
     const { id } = useParams()
     const navigate = useNavigate()
