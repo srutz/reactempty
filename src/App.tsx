@@ -10,7 +10,8 @@ export type Product = {
     description: string,
     rating: number,
     price: number,
-    thumbnail: string
+    thumbnail: string,
+    images: string[],
 }
 
 export function formatMoney(n: number) {
