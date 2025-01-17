@@ -6,28 +6,37 @@ export function Registration() {
     console.log("rerender form", lastname, firstname)
     return (
         <form className="m-4 p-4 grid grid-cols-[auto_1fr] gap-2 items-baseline">
-            <label htmlFor="i1">Firstname</label>
-            <div className="flex flex-col">
-                <input id="i1" value={firstname} onChange={(event) => { 
-                    setFirstname(event.target.value)
-                }}/>
-                {firstname.length >= 1 && firstname.length < 3 && (
-                    <ErrorMessage>Firstname should be longer</ErrorMessage>
-                )}
-            </div>
-            <label htmlFor="i2">Lastname</label>
-            <div className="flex flex-col">
-                <input id="i2" value={lastname} onChange={(event) => { 
-                    setLastname(event.target.value)
-                }}/>
-                {lastname.length >= 1 && lastname.length < 6 && (
-                    <ErrorMessage>Last should be longer, yours is 
-                        only {lastname.length} characters long.</ErrorMessage>
-                )}
-            </div>
+            <InputField id="i1" label="Firstname" value={firstname} onChange={
+                (value) => setFirstname(value)
+            } />
+            <InputField id="i2" label="Lastname" value={lastname} onChange={
+                (value) => setLastname(value)
+            } />
         </form>
     )
 }
 export function ErrorMessage(props: { children: ReactNode}) {
     return (<div className="text-sm text-red-600">{props.children}</div>)
+}
+
+export type InputFieldProps = {
+    id: string
+    label: string
+    errorMessage?: string
+    value: string
+    onChange: (v: string) => void
+}
+export function InputField(props: InputFieldProps) {
+    const { id, label, errorMessage, value, onChange } = props
+    return (
+        <>
+            <label htmlFor={id}>{label}</label>
+            <div className="flex flex-col">
+                <input id={id} value={value} onChange={(event) => {
+                    onChange(event.target.value)
+                }}/>
+                {errorMessage && (<ErrorMessage>{errorMessage}</ErrorMessage>)}
+            </div>
+        </>
+    )
 }
