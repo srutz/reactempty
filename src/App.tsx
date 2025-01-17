@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { createBrowserRouter, createHashRouter, NavLink, Outlet, RouterProvider, useLoaderData, useNavigate } from "react-router-dom"
 import { ProductDetailsView } from "./ProductDetails"
+import { Registration } from "./Registration"
 
 export type Product = {
     id: number,
@@ -182,6 +183,7 @@ export function MenuBar() {
             <NavLink to="/">Home</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/imprint">Imprint</NavLink>
+            <NavLink to="/registration">Registration</NavLink>
             <div className="grow"></div>
             <div className="menuportal"></div>
         </div>)
@@ -218,6 +220,7 @@ const router = createHashRouter([
                 }
              },
             { path: "/imprint", element: <div>Imprint</div> },
+            { path: "/registration", element: <Registration></Registration> },
             { path: "/*", element: <div>Alas, not found</div> },
         ]
     },
