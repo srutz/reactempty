@@ -1,7 +1,7 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
-import { createBrowserRouter, NavLink, Outlet, RouterProvider, useNavigate } from "react-router-dom"
+import { createBrowserRouter, createHashRouter, NavLink, Outlet, RouterProvider, useLoaderData, useNavigate } from "react-router-dom"
 import { ProductDetailsView } from "./ProductDetails"
 
 export type Product = {
@@ -154,19 +154,23 @@ export function ProductsPage() {
 
     const [animationParent] = useAutoAnimate()
     return (
-        <div className="grow flex flex-col gap-4 overflow-y-auto py-2">
-            <div className="flex flex-col gap-2">
-                <button onClick={() => setSkip(products.length)} >Load more</button>
+        <div className="flex gap-4 overflow-y-auto ">
+            <div className="flex-shrink flex flex-col gap-4 overflow-y-auto py-2">
+                <div className="flex flex-col gap-2">
+                    <button className="button" onClick={() => setSkip(products.length)} >Load more</button>
+                </div>
+                <div ref={animationParent} className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
+                    {products.map((p) => <ProductPanel key={p.id} product={p} />)}
+                </div>
             </div>
-            <div ref={animationParent} className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
-                {products.map((p) => <ProductPanel key={p.id} product={p} />)}
-            </div>
+            <Outlet></Outlet>
         </div>
     )
 }
 
 export function AboutPage() {
-    return (<div>About</div>)
+    const data = useLoaderData()
+    return (<div><pre>{JSON.stringify(data, null, 4)}</pre></div>)
 }
 
 export function MenuBar() {
@@ -195,13 +199,24 @@ export function MainGui() {
 }
 
 
-const router = createBrowserRouter([
+const router = createHashRouter([
     {
         path: "/", element: <MainGui></MainGui>,
         children: [
-            { path: "/", element: <ProductsPage></ProductsPage> },
-            { path: "/product/:id", element: <ProductDetailsView /> },
-            { path: "/about", element: <AboutPage></AboutPage> },
+            { path: "/", element: <ProductsPage></ProductsPage>, children: [
+                { path: "/product/:id", element: <ProductDetailsView /> },
+            ] },
+            { path: "/about", element: <AboutPage></AboutPage>,
+                loader: async () => {
+                    const response = await fetch("https://icanhazdadjoke.com/", {
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    })
+                    const data = await response.json()
+                    return data
+                }
+             },
             { path: "/imprint", element: <div>Imprint</div> },
             { path: "/*", element: <div>Alas, not found</div> },
         ]
