@@ -1,4 +1,4 @@
-import { HTMLInputTypeAttribute, ReactNode, useState } from "react"
+import { HTMLInputTypeAttribute, ReactNode, useEffect, useState } from "react"
 
 
 
@@ -10,9 +10,17 @@ export type FormType = {
 }
 
 export function Registration() {
-    const [form,setForm] = useState<FormType>({
-        email: "", firstname: "", lastname: ""
+    const [form,setForm] = useState<FormType>(() => { 
+        const v = {
+            email: "", firstname: "", lastname: ""
+        }
+        const raw = localStorage.getItem("st")
+        const pv: Partial<FormData> = raw ? JSON.parse(raw) : {}        
+        return { ...v, ...pv }
     })
+    useEffect(() => {
+        localStorage.setItem("st", JSON.stringify(form, null, 4))
+    }, [form])
     return (
         <form className="m-4 p-4 grid grid-cols-[auto_1fr] gap-2 items-baseline">
             <InputField id="i1" label="Firstname" value={form.firstname} onChange={(v) => {
