@@ -25,8 +25,8 @@ export function ProductDetailsView() {
             </div>
             <div className="mt-8 self-center flex flex-wrap gap-4">
                 {product.images.map((image) => (
-                    <div className="p-4 bg-gray-200 rounded-xl">
-                        <ProductImage src={image}></ProductImage>
+                    <div className="p-4 bg-gray-200 rounded-xl flex justify-center items-center">
+                        <ProductImage large src={image}></ProductImage>
                     </div>
                 ))}
             </div>

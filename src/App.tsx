@@ -21,10 +21,11 @@ export function formatMoney(n: number) {
     return nf.format(n)
 }
 
-export function ProductImage({ src} : { src: string}) {
+export function ProductImage({ large,  src} : { large?: boolean, src: string}) {
     const [loaded,setLoaded] = useState(false)
     return (
-        <div className={"w-32 " + (loaded ? "motion-preset-pop" : "invisible")}>
+        <div className={(large ? "w-[192px]" : "w-32") + " " + (loaded ? "motion-preset-pop" : "invisible")
+        }>
             <img src={src} onLoad={() => setLoaded(true)}></img>
         </div>                
     )
@@ -167,6 +168,7 @@ export function AboutPage() {
 export function MenuBar() {
     return (
         <div className="menubar flex gap-2
+                h-16
                 border-b border-gray-400 shadow
                 items-center bg-white px-4 py-2">
             <NavLink to="/">Home</NavLink>
