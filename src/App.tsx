@@ -1,4 +1,5 @@
-import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
+import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { createBrowserRouter, NavLink, Outlet, RouterProvider } from "react-router-dom"
 
@@ -41,8 +42,7 @@ export function ProductPanel(props: ProductPanelProps) {
                 <div className="font-bold">{formatMoney(product.price)}</div>
             </div>
             <div className="flex flex-col gap-2"> { /* title + description */}
-                <div className="font-bold "
-                    >{product.title}</div>
+                <div className="font-bold ">{product.title}</div>
                 <div className="text-gray-600">{product.description}</div>
                 <div className="grow"></div>
                 <Rating rating={product.rating}></Rating>
@@ -90,16 +90,18 @@ export function useProduct(id: number) {
 }
 
 export function useProducts(limit: number, skip?: number) {
+    console.log("useProducts", limit, skip)
     const { data, refetch } = useQuery({
         queryKey: [ "products", limit, skip ],
-        placeholderData: (prev) => prev,
-        staleTime: 60_000,
+        //placeholderData: (prev) => prev,
+        //staleTime: 60_000,
         queryFn: async() => {
             const params = new URLSearchParams()
             if (skip) params.set("skip", skip.toString())
             params.set("limit", limit.toString())
-            const result = await fetch("https://dummyjson.com/products"
-                + "?" + params.toString())
+            const url = "https://dummyjson.com/products" + "?" + params.toString()
+            console.log("url", url)
+            const result = await fetch(url)
             const d = await result.json()
             return d as { products: Product[] }
         }
@@ -121,17 +123,28 @@ export function useInterval(periodMs: number, n?: number) {
 } 
 
 export function ProductsPage() {
-    const CHUNKSIZE = 10
-    useInterval(1_000)
+    const CHUNKSIZE = 2
     const [limit, setLimit ] = useState(CHUNKSIZE)
-    const { data } = useProducts(limit)
-    console.log("render app", data)
+    const [skip, setSkip] = useState(0)
+    const [products,setProducts] = useState<Product[]>([])
+    const { data } = useProducts(limit, skip)
+
+    console.log("render:", skip, products.map(p => p.id))
+
+    useEffect(() => {
+        if (data?.products) {
+            setProducts([...products, ...data?.products])
+        }
+    }, [data])
+
+    const [animationParent] = useAutoAnimate()
     return (
         <div className="grow flex flex-col gap-4 overflow-y-auto py-2">
-            <div>{new Date().toLocaleString()}</div>
-            <button onClick={() => setLimit(limit + CHUNKSIZE)} >Load more</button>
-            <div className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
-                {data?.products.map((p) => <ProductPanel key={p.id} product={p} />)}
+            <div className="flex flex-col gap-2">
+            <button onClick={() => setSkip(products.length)} >Load more</button>
+            </div>
+            <div ref={animationParent} className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
+                {products.map((p) => <ProductPanel key={p.id} product={p} />)}
             </div>
         </div>
     )
@@ -149,6 +162,8 @@ export function MenuBar() {
             <NavLink to="/">Home</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/imprint">Imprint</NavLink>
+            <div className="grow"></div>
+            <div className="menuportal"></div>
         </div>)
 }
 
@@ -168,7 +183,9 @@ const router = createBrowserRouter([
         { path: "/", element: <ProductsPage></ProductsPage> }, 
         { path: "/about", element: <AboutPage></AboutPage> }, 
         { path: "/imprint", element: <div>Imprint</div> }, 
-    ] }, 
+        { path: "/*", element: <div>Alas, not found</div> }, 
+    ] 
+    },
 ])
 
 export function App() {
