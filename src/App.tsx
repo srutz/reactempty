@@ -16,18 +16,19 @@ export type Product = {
 
 export function formatMoney(n: number) {
     const nf = new Intl.NumberFormat("de-DE", {
-        currency: "EUR", 
-        style: "currency" })
+        currency: "EUR",
+        style: "currency"
+    })
     return nf.format(n)
 }
 
-export function ProductImage({ large,  src} : { large?: boolean, src: string}) {
-    const [loaded,setLoaded] = useState(false)
+export function ProductImage({ large, src }: { large?: boolean, src: string }) {
+    const [loaded, setLoaded] = useState(false)
     return (
         <div className={(large ? "w-[192px]" : "w-32") + " " + (loaded ? "motion-preset-pop" : "invisible")
         }>
             <img src={src} onLoad={() => setLoaded(true)}></img>
-        </div>                
+        </div>
     )
 }
 
@@ -45,8 +46,8 @@ export function ProductPanel(props: ProductPanelProps) {
     return (
         <div className="w-[400px] bg-white shadow-xl p-4 m-4 rounded-lg flex gap-8 
                     cursor-pointer border border-white hover:border hover:border-gray-400"
-                onClick={handleClick}>
-            <div className="flex flex-col gap-2"> { /* image + price */ }
+            onClick={handleClick}>
+            <div className="flex flex-col gap-2"> { /* image + price */}
                 <ProductImage src={product.thumbnail}></ProductImage>
                 <div className="grow"></div>
                 <div className="font-bold">{formatMoney(product.price)}</div>
@@ -64,16 +65,16 @@ export type RatingProps = { rating: number }
 export function Rating(props: RatingProps) {
     return (
         <div className="self-end flex">
-            {[1,2,3,4,5].map((i) => (
-                <div key={i} className={(i < props.rating ? "text-yellow-500" : "" 
-                    ) + " text-2xl"}>★</div>
+            {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className={(i < props.rating ? "text-yellow-500" : ""
+                ) + " text-2xl"}>★</div>
             ))}
         </div>
     )
 }
 
 export function useProduct_(id: number) {
-    const [ product, setProduct] = useState<Product>()
+    const [product, setProduct] = useState<Product>()
     useEffect(() => {
         (async () => {
             const result = await fetch("https://dummyjson.com/product/" + id)
@@ -86,10 +87,13 @@ export function useProduct_(id: number) {
 
 export function useProduct(id: number) {
     const { data, refetch } = useQuery({
-        queryKey: [ "product", id ],
+        queryKey: ["product", id],
         staleTime: 3_600 * 1_000,
-        queryFn: async() => {
+        queryFn: async () => {
             const result = await fetch("https://dummyjson.com/product/" + id)
+            if (Math.floor(result.status / 100) != 2) {
+                throw "product " + id + " returned status: " + result.status
+            }
             const d = await result.json()
             return d as Product
         }
@@ -103,10 +107,10 @@ export function useProduct(id: number) {
 export function useProducts(limit: number, skip?: number) {
     console.log("useProducts", limit, skip)
     const { data, refetch } = useQuery({
-        queryKey: [ "products", limit, skip ],
+        queryKey: ["products", limit, skip],
         //placeholderData: (prev) => prev,
         staleTime: 600_000,
-        queryFn: async() => {
+        queryFn: async () => {
             const params = new URLSearchParams()
             if (skip) params.set("skip", skip.toString())
             params.set("limit", limit.toString())
@@ -121,7 +125,7 @@ export function useProducts(limit: number, skip?: number) {
 }
 
 export function useInterval(periodMs: number, n?: number) {
-    const [trigger,setTrigger ] = useState(1)
+    const [trigger, setTrigger] = useState(1)
     useEffect(() => {
         const id = setInterval(() => {
             setTrigger((prev) => {
@@ -129,15 +133,15 @@ export function useInterval(periodMs: number, n?: number) {
             })
         }, periodMs)
         return () => clearInterval(id)
-    }, [ ])
+    }, [])
     return trigger
-} 
+}
 
 export function ProductsPage() {
     const CHUNKSIZE = 10
-    const [limit, setLimit ] = useState(CHUNKSIZE)
+    const [limit, _] = useState(CHUNKSIZE)
     const [skip, setSkip] = useState(0)
-    const [products,setProducts] = useState<Product[]>([])
+    const [products, setProducts] = useState<Product[]>([])
     const { data } = useProducts(limit, skip)
 
     console.log("render:", skip, products.map(p => p.id))
@@ -152,7 +156,7 @@ export function ProductsPage() {
     return (
         <div className="grow flex flex-col gap-4 overflow-y-auto py-2">
             <div className="flex flex-col gap-2">
-            <button onClick={() => setSkip(products.length)} >Load more</button>
+                <button onClick={() => setSkip(products.length)} >Load more</button>
             </div>
             <div ref={animationParent} className="justify-center flex flex-wrap justify-items-center overflow-y-auto">
                 {products.map((p) => <ProductPanel key={p.id} product={p} />)}
@@ -190,14 +194,17 @@ export function MainGui() {
     )
 }
 
+
 const router = createBrowserRouter([
-    { path: "/", element: <MainGui></MainGui>, children: [
-        { path: "/", element: <ProductsPage></ProductsPage> }, 
-        { path: "/product/:id", element: <ProductDetailsView /> }, 
-        { path: "/about", element: <AboutPage></AboutPage> }, 
-        { path: "/imprint", element: <div>Imprint</div> }, 
-        { path: "/*", element: <div>Alas, not found</div> }, 
-    ] 
+    {
+        path: "/", element: <MainGui></MainGui>,
+        children: [
+            { path: "/", element: <ProductsPage></ProductsPage> },
+            { path: "/product/:id", element: <ProductDetailsView /> },
+            { path: "/about", element: <AboutPage></AboutPage> },
+            { path: "/imprint", element: <div>Imprint</div> },
+            { path: "/*", element: <div>Alas, not found</div> },
+        ]
     },
 ])
 
