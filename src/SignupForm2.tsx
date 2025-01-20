@@ -2,22 +2,16 @@ import { FormEvent } from "react";
 import { CheckboxInput } from "./CheckboxInput";
 import { TextInput } from "./TextInput";
 import { useFormContext } from "./useFormContext";
+import axios from "axios";
 
 export function SignupForm2() {
     const { form, setForm } = useFormContext()
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        console.log("send form", form)
-
-        const func = async () => {
-            const results = await fetch("/api/submitform", {
-                method: "POST",
-                body: JSON.stringify(form)
-            })
-            const response = await results.text()
+        event.preventDefault();
+        (async () => {
+            const response = await axios.post("/api/submitform", form) 
             console.log(response)
-        }
-        func()
+        })()
     }
 
     return (
