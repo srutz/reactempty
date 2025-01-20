@@ -77,6 +77,7 @@ export function SignupForm() {
                 onChange={(e) => { setForm({ ...form, lastname: e.target.value }) }}>
             </TextInput>
             <TextInput label="Stadt" id="city"
+                required
                 placeholder="Stadt" value={form.city}
                 onChange={(e) => { setForm({ ...form, city: e.target.value }) }}>
             </TextInput>
