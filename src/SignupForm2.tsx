@@ -8,6 +8,16 @@ export function SignupForm2() {
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         console.log("send form", form)
+
+        const func = async () => {
+            const results = await fetch("/api/submitform", {
+                method: "POST",
+                body: JSON.stringify(form)
+            })
+            const response = await results.text()
+            console.log(response)
+        }
+        func()
     }
 
     return (
