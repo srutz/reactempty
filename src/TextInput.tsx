@@ -12,7 +12,7 @@ export type TextInputProps = {
     onChange: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-export function TextInput(props: TextInputProps) {
+export const TextInput: React.FC<TextInputProps> = (props) => {
     const { 
         id, value, onChange, 
         label, placeholder,
