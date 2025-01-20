@@ -1,4 +1,4 @@
-import { FormEvent, useEffect } from "react";
+import { FormEvent } from "react";
 import { CheckboxInput } from "./CheckboxInput";
 import { useFormContext } from "./SignupForm";
 import { TextInput } from "./TextInput";
@@ -16,7 +16,12 @@ export function SignupForm2() {
         <div className="grid grid-cols-[auto,1fr] gap-x-4">
             <div className="text-gray-500">Vorname</div><div>{form.firstname}</div>
             <div className="text-gray-500">Nachname</div><div>{form.lastname}</div>
-        </div>         
+        </div>
+        <TextInput id="comment" placeholder="Kommentar"
+                value={form.comment} label="Kommentar"
+                errorMessage={form.comment.length > 10 && "Bitte fass dich kurz!"}
+                onChange={(e) => setForm({...form, comment: e.target.value})}
+            ></TextInput>
         <CheckboxInput id="x1" label="Ich habe die AGBs verstanden"
             value={form.specialNeeds} 
             onChange={(e) => setForm({...form, specialNeeds: e.target.checked})} />

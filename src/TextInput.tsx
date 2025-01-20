@@ -19,6 +19,6 @@ export function TextInput({
         <Label htmlFor={id}>{label}</Label>
         <input id={id} placeholder={placeholder} value={value} onChange={onChange}></input>
         {infoMessage && (<div className="text-gray-600 text-sm">{infoMessage}</div>)}
-        {errorMessage && (<div className="text-red-300 text-sm">{errorMessage}</div>)}
+        {errorMessage && (<div className="text-red-700 text-sm">{errorMessage}</div>)}
     </div>)
 }

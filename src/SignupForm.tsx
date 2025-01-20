@@ -18,19 +18,23 @@ export function FormContextProvider({ children }: FormContextProviderProps) {
     const [form, setForm] = useState(() => {
         const raw = localStorage.getItem("fs")
         const defaultValue = {
-            firstname: "", lastname: "", specialNeeds: false, city: "Gelsenkirchen"
-        } as SignupFormType
+            firstname: "",
+            lastname: "",
+            specialNeeds: false, 
+            city: "Gelsenkirchen",
+            comment: ""
+        } satisfies SignupFormType
         if (raw) {
             const v = JSON.parse(raw) as SignupFormType
-            return { ...defaultValue, ...v}
+            return { ...defaultValue, ...v }  ///kombiniere defaultValue und v
         }
         return defaultValue
     })
-    
+
     useEffect(() => {
         // on mount und wenn sich form geändert hat
         localStorage.setItem("fs", JSON.stringify(form))
-    }, [ form ])
+    }, [form])
     return (
         <FormContext.Provider value={{ form, setForm }}>
             {children}
@@ -52,6 +56,7 @@ export type SignupFormType = {
     lastname: string
     specialNeeds: boolean
     city: string
+    comment: string
 }
 
 export function SignupForm() {
@@ -69,7 +74,7 @@ export function SignupForm() {
                 placeholder="Lastname" value={form.lastname}
                 onChange={(e) => { setForm({ ...form, lastname: e.target.value }) }}>
             </TextInput>
-            <TextInput label="Staft" id="city"
+            <TextInput label="Stadt" id="city"
                 placeholder="Stadt" value={form.city}
                 onChange={(e) => { setForm({ ...form, city: e.target.value }) }}>
             </TextInput>

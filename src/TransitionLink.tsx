@@ -28,8 +28,8 @@ export function TransitionLink(props: TransitionLinkProps) {
 
     const onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault()
-        if (document.startViewTransition) {
-            document.startViewTransition(() => {
+        if ((document as any).startViewTransition) {
+            (document as any).startViewTransition(() => {
                 flushSync(() => { navigate(to) })
             })
         } else {

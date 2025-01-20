@@ -1,5 +1,5 @@
-import { ReactNode, useEffect } from "react"
-import { createBrowserRouter, NavLink, Outlet, RouterProvider, useLocation, useNavigate, useNavigation, useParams } from "react-router-dom"
+import { ReactNode } from "react"
+import { createBrowserRouter, Outlet, RouterProvider, useParams } from "react-router-dom"
 import { ProductDetails, Products, ProductType } from "./Products"
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { TransitionLink } from "./TransitionLink"
@@ -12,9 +12,9 @@ const router = createBrowserRouter(
             { path: "/", element: <div>At Home</div> },
             {
                 path: "/products", element: <Products></Products>, children: [
-                    { path: "/products/:id", element: <ProductPage></ProductPage> },
                 ]
             },
+            { path: "/products/:id", element: <ProductPage></ProductPage> },
             { path: "/signup", element: <SignupForm></SignupForm> },
             { path: "/signup2", element: <SignupForm2></SignupForm2> },
             { path: "/about", element: <div>About</div> },
