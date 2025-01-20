@@ -1,5 +1,7 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react"
 
+const LOCALSTORAGE_KEY = "fs"
+
 // type of our form
 export type SignupFormType = {
     firstname: string
@@ -24,7 +26,7 @@ export type FormContextProviderProps = { children: ReactNode }
 // React Component welche den Zustand bereitstellt. Weit oben in der Hierachie
 export function FormContextProvider({ children }: FormContextProviderProps) {
     const [form, setForm] = useState(() => {
-        const raw = localStorage.getItem("fs")
+        const raw = localStorage.getItem(LOCALSTORAGE_KEY)
         const defaultValue = {
             firstname: "",
             lastname: "",
@@ -41,7 +43,7 @@ export function FormContextProvider({ children }: FormContextProviderProps) {
 
     useEffect(() => {
         // on mount und wenn sich form geändert hat
-        localStorage.setItem("fs", JSON.stringify(form))
+        localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(form))
     }, [form])
     return (
         <FormContext.Provider value={{ form, setForm }}>
