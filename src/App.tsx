@@ -3,8 +3,9 @@ import { createBrowserRouter, Outlet, RouterProvider, useParams } from "react-ro
 import { ProductDetails, Products, ProductType } from "./Products"
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 import { TransitionLink } from "./TransitionLink"
-import { FormContextProvider, SignupForm } from "./SignupForm"
+import { SignupForm } from "./SignupForm"
 import { SignupForm2 } from "./SignupForm2"
+import { FormContextProvider } from "./useFormContext"
 
 const router = createBrowserRouter(
     [{
