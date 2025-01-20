@@ -84,9 +84,13 @@ export function Main() {
 export function Footer() {
     const { form } = useFormContext()
 
+    const formValid = form.firstname.length > 1
+        && form.lastname.length > 1
+        && form.specialNeeds
+
     return (<div className="bg-white px-6 py-2 border-t border-gray-300">
-        <div className="text-green-600 text-sm">
-            {form.firstname} {form.lastname}
+        <div className="text-red-600 text-sm font-bold">
+            {!formValid && "Bitte füllen Sie die Pflichtfelder aus"}
         </div>
     </div>)
 }

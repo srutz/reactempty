@@ -66,11 +66,13 @@ export function SignupForm() {
     return (
         <div className="flex flex-col">
             <TextInput label="Firstname" id="x"
+                required
                 placeholder="Firstname" value={form.firstname}
                 onChange={(e) => { setForm({ ...form, firstname: e.target.value }) }}
                 errorMessage={form.firstname.length > 20 && `Echt langer Name`}>
             </TextInput>
             <TextInput label="lastname" id="y"
+                required
                 placeholder="Lastname" value={form.lastname}
                 onChange={(e) => { setForm({ ...form, lastname: e.target.value }) }}>
             </TextInput>

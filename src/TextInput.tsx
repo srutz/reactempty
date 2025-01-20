@@ -5,6 +5,7 @@ export type TextInputProps = {
     id: string
     label: string
     value: string
+    required?: boolean
     placeholder: string
     infoMessage?: string | boolean
     errorMessage?: string | boolean
