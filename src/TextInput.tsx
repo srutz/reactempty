@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react"
+import { ChangeEvent, ComponentProps } from "react"
 import { Label } from "./SignupForm"
 
 export type TextInputProps = {
@@ -19,15 +19,28 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
         required,
         infoMessage, errorMessage } = props
     return (<div className="flex flex-col mb-2">
-        <Label htmlFor={id}>{label}{required && <RequiredIndicator/>}</Label>
+        <Label htmlFor={id}>{label}{required && (
+            <RequiredIndicator xxl
+                onClick={() => alert("hi")}
+                aria-description="required field"
+                title="This field is required"/>
+        )}</Label>
         <input id={id} placeholder={placeholder} value={value} onChange={onChange}></input>
         {infoMessage && (<div className="text-gray-600 text-sm">{infoMessage}</div>)}
         {errorMessage && (<div className="text-red-700 text-sm">{errorMessage}</div>)}
     </div>)
 }
 
-export const RequiredIndicator: React.FC = () => {
+export type RequiredIndicatorProps = {
+    xxl?: boolean
+} & ComponentProps<"span">
+
+export const RequiredIndicator: React.FC<RequiredIndicatorProps> = (props) => {
+    const { xxl, ...rest } = props
     return (
-        <span className="ml-1 text-sm font-bold text-red-700">*</span>
+        <span {...rest} className={`ml-1 text-sm 
+            font-bold text-red-700 ` + (xxl ? "text-2xl":"")} >
+            *
+        </span>
     )
 }

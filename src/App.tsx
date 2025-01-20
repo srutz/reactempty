@@ -1,4 +1,3 @@
-import { ReactNode } from "react"
 import { createBrowserRouter, Outlet, RouterProvider, useParams } from "react-router-dom"
 import { ProductDetails, Products, ProductType } from "./Products"
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
@@ -6,6 +5,7 @@ import { TransitionLink } from "./TransitionLink"
 import { SignupForm } from "./SignupForm"
 import { SignupForm2 } from "./SignupForm2"
 import { FormContextProvider } from "./useFormContext"
+import { ReactNode } from "react"
 
 const router = createBrowserRouter(
     [{
@@ -67,7 +67,10 @@ export function MenuBar() {
     </div>)
 }
 
-export function Box({ children }: { children: ReactNode }) {
+
+type BoxProps = { children: ReactNode }
+
+export function Box({ children }: BoxProps) {
     return (<div className="h-1 grow bg-white shadow-xl 
         rounded-lg border border-gray-300 p-4 m-4 flex flex-col">
         {children}
