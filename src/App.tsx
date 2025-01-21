@@ -2,6 +2,7 @@ import { ComponentProps, ReactNode, useEffect, useRef } from "react";
 import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useRouteError, useSearchParams } from "react-router-dom";
 import { queryFunc, useQuotes } from "./useQuotes";
 import { useQueryClient } from "@tanstack/react-query";
+import { LoadingIndicator } from "./LoadingIndicator";
 
 
 export type QuoteType = { id: number; quote: string; author: string }
@@ -60,12 +61,16 @@ export function Page2() {
     const [ search ] = useSearchParams()
     const page = Number.parseInt(search.get("page") || "1")
     const query = useQuotes(page - 1)
-    const { data: response } = query
+    const { isLoading, data: response } = query
     const scroller = useRef<HTMLDivElement>(null)
     //const page = Math.floor(response.skip / PAGE_SIZE)
     useEffect(() => {
         scroller.current?.scroll({top: 0, behavior: "smooth" })
     }, [page])
+
+    if (isLoading) {
+        return <LoadingIndicator/>
+    }
 
     if (!response) {
         return undefined

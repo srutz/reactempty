@@ -13,6 +13,12 @@ export const queryFunc = async (page: number) => {
     return json as QuotesResponse
 }
 
+export async function delay(delayMs: number) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, delayMs)
+    })
+}
+
 export function useQuotes(page: number) {
     const query = useQuery({
         staleTime: 3600_0000,
