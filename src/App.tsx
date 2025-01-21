@@ -1,5 +1,6 @@
-import { ComponentProps, ReactNode } from "react"
-import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useNavigation, useRouteError } from "react-router-dom";
+import { ComponentProps, ReactNode, useEffect, useState } from "react";
+import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useRouteError } from "react-router-dom";
+import { ProductDetails, ProductType } from "./Products";
 
 
 type QuoteType = { id: number; quote: string; author: string }
@@ -98,7 +99,19 @@ export function Page2() {
 }
 
 export function Page3() {
-    return (<ContentPanel title="Products" ><div className="flex-1 bg-indigo-200"></div></ContentPanel>)
+    const [ product, setProduct ] = useState<ProductType>()
+    useEffect(() => {
+        (async () => {
+            const r = await fetch("https://dummyjson.com/product/3")
+            const d = await r.json()
+            setProduct(d)
+        })()
+    }, [])
+    return (<ContentPanel title="Products" >
+        {product && (
+            <ProductDetails product={product} ></ProductDetails>
+        )}
+        <div className="flex-1 bg-indigo-200"></div></ContentPanel>)
 }
 
 export function QuoteDetails() {
