@@ -1,8 +1,7 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { PAGE_SIZE, QuotesResponse } from "./App";
-import { useEffect } from "react";
 
-const queryFunc = async (page: number) => {
+export const queryFunc = async (page: number) => {
     let url = "https://dummyjson.com/quotes"
     const p = new URLSearchParams()
     p.set("limit", (PAGE_SIZE).toString())
@@ -20,14 +19,5 @@ export function useQuotes(page: number) {
         queryKey: [ "quotes", page],
         queryFn: () => queryFunc(page)
     })
-    const queryClient = useQueryClient()
-    useEffect(() => {
-        for (let i = 0; i < 6; i++) {
-            queryClient.prefetchQuery({
-                queryKey: [ "quotes", i],
-                queryFn: () => queryFunc(page)
-            })
-        }
-    }, [])
     return query
 }

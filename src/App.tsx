@@ -1,5 +1,7 @@
 import { ComponentProps, ReactNode, useEffect, useRef } from "react";
-import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useRouteError } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useLocation, useNavigate, useRouteError, useSearchParams } from "react-router-dom";
+import { queryFunc, useQuotes } from "./useQuotes";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 export type QuoteType = { id: number; quote: string; author: string }
@@ -17,21 +19,6 @@ export function QuotePanel({ quote }: { quote: QuoteType }) {
     )
 }
 
-const loadQuotes = async (props: any) => {
-    const search = props.request.url as string
-    const p = new URL(search).searchParams
-    let url = "https://dummyjson.com/quotes"
-    p.set("limit", (PAGE_SIZE).toString())
-    let page = 0
-    const pageRaw = p.get("page")
-    if (pageRaw) {
-        page = Number.parseInt(pageRaw) - 1
-        url += "?skip=" + (page * PAGE_SIZE)
-    }
-    const response = await fetch(url)
-    const json = await response.json()
-    return json as QuotesResponse
-}
 
 const loadSingleQuote = async (props: any) => {
     const id = props.params.id
@@ -49,7 +36,7 @@ const router = createBrowserRouter([
             { path: "/", element: <Page1 />, },
             { path: "/dashboard", element: <Page1 />, },
             {
-                path: "/quotes", element: <Page2 />, loader: loadQuotes, children: [
+                path: "/quotes", element: <Page2 />, children: [
                     { path: "/quotes/:id", element: <QuoteDetails />, loader: loadSingleQuote },
                 ],
                 errorElement: <Error></Error>
@@ -70,18 +57,25 @@ export function Page1() {
 
 export function Page2() {
     const navigate = useNavigate()
-    const response = useLoaderData() as QuotesResponse
+    const [ search ] = useSearchParams()
+    const page = Number.parseInt(search.get("page") || "1")
+    const query = useQuotes(page - 1)
+    const { data: response } = query
     const scroller = useRef<HTMLDivElement>(null)
-    const page = Math.floor(response.skip / PAGE_SIZE)
+    //const page = Math.floor(response.skip / PAGE_SIZE)
     useEffect(() => {
         scroller.current?.scroll({top: 0, behavior: "smooth" })
     }, [page])
+
+    if (!response) {
+        return undefined
+    }
     const prev = () => { moveTo(page - 1) }
     const next = () => { moveTo(page + 1) }
     const moveTo = (page: number) => {
         const searchParams = new URLSearchParams(location.search);
         if (page >= 1) {
-            searchParams.set("page", (page + 1).toString())
+            searchParams.set("page", page.toString())
         } else {
             searchParams.delete("page")
         }
@@ -282,6 +276,19 @@ export function Main() {
 }
 
 export function App() {
+    const queryClient = useQueryClient()
+    useEffect(() => {
+        const PREFETCH = false
+        if (PREFETCH) {
+            for (let i = 0; i < 6; i++) {
+                queryClient.prefetchQuery({
+                    queryKey: [ "quotes", i],
+                    queryFn: () => queryFunc(i)
+                })
+            }
+        }
+    }, [])
+
     return <RouterProvider router={router} />
 }
 
