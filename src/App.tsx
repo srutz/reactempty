@@ -1,15 +1,23 @@
 import { FC, ReactNode, useEffect, useState } from "react"
 
 export function App() {
+    const [ key, setKey ] = useState(100)
+    const handleRestart = () => {
+        setKey(key + 1)
+    }
     return (
-        <Box><Logo word="hansjürgen"></Logo>
-        </Box>
+        <div className="flex flex-col gap-1 items-center">
+            <Box key={key} >
+                <Logo word="Frankfurt"></Logo>
+            </Box>
+            <button onClick={handleRestart}>Restart Animation</button>
+        </div>
     )
 }
 
 const Box: FC<{ children: ReactNode }> = (props) => {
     return (
-        <div className="bg-gray-200 m-4 p-4 
+        <div className="bg-gray-200 m-4 px-4 py-2 
             rounded-xl
             border border-gray-300 shadow-xl
             flex justify-center">
@@ -30,10 +38,10 @@ const Letter: FC<{ letter: string, index: number }> = (props) => {
     useEffect(() => {
         setTimeout(() => {
             setMotion("motion-running")
-        }, 250 + (props.index * 200))
+        }, 250 + (props.index * 150))
     }, [])
     return (<div 
-        className={`${motion} motion-preset-shrink uppercase`}>
+        className={`${motion} motion-preset-shrink text-2xl uppercase`}>
             {props.letter}</div>)
 }
 
