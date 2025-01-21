@@ -1,38 +1,21 @@
 import { ReactNode, useEffect, useState } from "react"
-import { useInterval, useWindowSize } from "./useWindowSize"
 
 
 
 export function App() {
-    const size = useWindowSize()
     const [key, setKey] = useState(1)
 
     // restart animation periodically
     //useInterval(() => setKey((key) => key + 1), 10_000)
-
-
-    if (size.height < 200) return <div>Nicht hoch genug</div>
     return (
         <div className="bg-gray-200 w-full h-full flex flex-col gap-4 items-center">
-            <HeaderBar></HeaderBar>
             <Box key={key} >
-                <Logo title="Willkommen"></Logo>
+                <Logo title="Lautzenhausen"></Logo>
             </Box>
             <button onClick={() => setKey(key + 1)}>Restart Animation</button>
-            <div>Fenster: {size.width} x {size.height}</div>
         </div>
     )
 }
-
-function HeaderBar() {
-    const size = useWindowSize()
-    return (
-        <div className="w-full h-16 bg-gray-100 border-b border-gray-300 flex flex-row gap-2 p-8 items-center">
-            HeaderBar: {size.width} x { size.height}
-        </div>
-    )
-}
-
 
 function Box(props: { children: ReactNode }) {
     const cn = "motion-preset-pop bg-white border border-gray-300 shadow-xl rounded-xl m-2 p-4"
