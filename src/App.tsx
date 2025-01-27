@@ -41,7 +41,6 @@ function Box({ heading, star, children }: BoxProps) {
     function handleClick() {
         setOpen(!open)
     }
-    const size = useWindowSize()
     return (
         <div className="bg-gray-300 shadow-xl rounded-lg p-4 m-4 flex flex-col gap-2">
             <div className="text-sm text-gray-600 flex justify-between items-center pb-2">
@@ -53,7 +52,7 @@ function Box({ heading, star, children }: BoxProps) {
                     {star && <MdStar />}
                 </div>
             </div>
-            {open && size.height > 300 && (
+            {open && (
                 <div className="mt-2">
                     {children}
                 </div>
