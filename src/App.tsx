@@ -29,9 +29,13 @@ function useWindowSize() {
     return size
 }
 
+
 function Greetings() {
     const size = useWindowSize()
-    return <div>Hallo zusammen {size.width} x {size.height}</div>
+    return <div>{size.width < 400 
+        ? "eng hier" 
+        : <div>Hallo zusammen {size.width} x {size.height}</div>}
+    </div>
 }
 
 type BoxProps = { heading: string, star?: boolean, children: ReactNode }
