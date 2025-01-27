@@ -4,10 +4,6 @@ import { MdStar, MdTableBar } from "react-icons/md"
 export function App() {
     return (
         <div className="motion-preset-slide-left">
-            <Box heading="News of the day" star>
-                <Greetings />
-                <Greetings />
-            </Box>
             <Box heading="News of the week" ><Greetings /></Box>
         </div>
     )
@@ -16,8 +12,15 @@ export function App() {
 function Greetings() {
     useEffect(() => {
         // code that runs "on-mounted"
+        const l = () => {
+            console.log(window.innerWidth, window.innerHeight)
+        }
+        window.addEventListener("resize", l)
+        console.log("add listener")
         return () => {
             // cleanup code that "on-unmounted"
+            window.removeEventListener("resize", l)
+            console.log("remove listener")
         }
     }, [])
     return <div>Hallo zusammen</div>
