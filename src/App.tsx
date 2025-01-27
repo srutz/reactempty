@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import { MdStar, MdTableBar } from "react-icons/md"
 
 export function App() {
@@ -13,16 +13,23 @@ export function App() {
     )
 }
 
-function Greetings() { return <div>Hallo zusammen</div> }
+function Greetings() {
+    useEffect(() => {
+        // code that runs "on-mounted"
+        return () => {
+            // cleanup code that "on-unmounted"
+        }
+    }, [])
+    return <div>Hallo zusammen</div>
+}
 
 type BoxProps = { heading: string, star?: boolean, children: ReactNode }
 
 function Box({ heading, star, children }: BoxProps) {
-    const [ open, setOpen ] = useState<boolean>(false)
-    console.log("render Box", heading)
+    const [ open, setOpen ] = useState(false)
     function handleClick() {
         setOpen(!open)
-    } 
+    }
     return (
         <div className="bg-gray-300 shadow-xl rounded-lg p-4 m-4 flex flex-col gap-2">
             <div className="text-sm text-gray-600 flex justify-between items-center pb-2">
