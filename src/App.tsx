@@ -29,13 +29,25 @@ function useWindowSize() {
     return size
 }
 
+function useInterval(intervalTime: number, intervalFunc: () => void) {
+    useEffect(() => {
+        const id = setInterval(intervalFunc, intervalTime)
+        return () => { clearInterval(id) }
+    }, [])
+}
+
 
 function Greetings() {
-    const size = useWindowSize()
-    return <div>{size.width < 400 
-        ? "eng hier" 
-        : <div>Hallo zusammen {size.width} x {size.height}</div>}
-    </div>
+    const [ date, setDate ] = useState(new Date())
+    console.log("render greetings ....")
+    useWindowSize()
+    useInterval(1_000, () => {
+        console.log("timer tick")
+        setDate(new Date())
+    })
+    return (
+        <div>Hallo zusammen {date.toLocaleString()}</div>
+    )
 }
 
 type BoxProps = { heading: string, star?: boolean, children: ReactNode }
