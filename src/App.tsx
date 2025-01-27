@@ -9,21 +9,29 @@ export function App() {
     )
 }
 
-function Greetings() {
+function useWindowSize() {
+    const [ size, setSize ] = useState({ 
+        width: window.innerWidth, height: window.innerHeight
+    })
     useEffect(() => {
         // code that runs "on-mounted"
         const l = () => {
-            console.log(window.innerWidth, window.innerHeight)
+            setSize({ 
+                width: window.innerWidth, height: window.innerHeight
+            })
         }
         window.addEventListener("resize", l)
-        console.log("add listener")
         return () => {
             // cleanup code that "on-unmounted"
             window.removeEventListener("resize", l)
-            console.log("remove listener")
         }
     }, [])
-    return <div>Hallo zusammen</div>
+    return size
+}
+
+function Greetings() {
+    const size = useWindowSize()
+    return <div>Hallo zusammen {size.width} x {size.height}</div>
 }
 
 type BoxProps = { heading: string, star?: boolean, children: ReactNode }
@@ -33,6 +41,7 @@ function Box({ heading, star, children }: BoxProps) {
     function handleClick() {
         setOpen(!open)
     }
+    const size = useWindowSize()
     return (
         <div className="bg-gray-300 shadow-xl rounded-lg p-4 m-4 flex flex-col gap-2">
             <div className="text-sm text-gray-600 flex justify-between items-center pb-2">
@@ -44,7 +53,7 @@ function Box({ heading, star, children }: BoxProps) {
                     {star && <MdStar />}
                 </div>
             </div>
-            {open && (
+            {open && size.height > 300 && (
                 <div className="mt-2">
                     {children}
                 </div>
