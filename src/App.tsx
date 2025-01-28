@@ -35,13 +35,11 @@ export function usePrefetch() {
 }
 
 export function App() {
-    const [id, setId] = useState(10)
-    usePrefetch()
     const result = useQuery({
-        queryKey: [ "product", id ],
+        queryKey: ["products"],
         queryFn: async () => {
-            const response = await axios.get(baseUrl + encodeURIComponent(id))
-            return response.data as Product
+            const response = await axios.get(baseUrl)
+            return response.data as { "products": Product[] }
         },
         placeholderData: (prev) => { return prev },
         staleTime: 3_600_000
@@ -51,27 +49,27 @@ export function App() {
         return <div>still loading</div>
     }
     return (
-        <div className="">
-            <ProductPanel product={data}/>
-            <div className="flex gap-2 mx-4">
-                <button onClick={() => setId(id - 1)}>Prev</button>
-                <button onClick={() => setId(id + 1)}>Next</button>
-            </div>
+        <div className="flex flex-wrap gap-4 overflow-y-auto">
+            {data?.products.map((p) => (
+                <ProductPanel product={p} />
+            ))}
         </div>
     )
 }
-function formatGerman(n: number) { return new Intl.NumberFormat("de", {
-    currency: "EUR"
-}).format (n)}
+function formatGerman(n: number) {
+    return new Intl.NumberFormat("de", {
+        currency: "EUR"
+    }).format(n)
+}
 
-export function ProductPanel({ product } : { product?: Product}) {
+export function ProductPanel({ product }: { product?: Product }) {
     if (!product)
         return undefined
     return (
-        <div className="bg-white p-4 m-4 shadow-xl h-48
+        <div className="bg-white p-4 m-4 shadow-xl w-[440px] h-[188px]
                 relative rounded-lg flex flex-col">
-            { /* oberer bereich */ }
-            <div className="grow flex gap-8 items-stretch">
+            { /* oberer bereich */}
+            <div className="h-1 grow flex gap-8 items-stretch">
                 {/* linke seite */}
                 <div className="flex flex-col justify-between gap-2">
                     <div className="w-32">
@@ -84,7 +82,7 @@ export function ProductPanel({ product } : { product?: Product}) {
                 {/* rechte seite */}
                 <div className="flex flex-col gap-2">
                     <div>{product.title}</div>
-                    <div className="text-gray-600">{product.description}</div>
+                    <div className="text-gray-600 overflow-hidden">{product.description}</div>
                 </div>
             </div>
         </div>
