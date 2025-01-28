@@ -18,25 +18,27 @@ function delay(ms: number) {
 }
 
 export function App() {
-    const id = 18
+    const [id, setId] = useState(10)
     const result = useQuery({
         queryKey: [ "product", id ],
         queryFn: async () => {
-            await delay(2_000)
-            const response = await axios.get("https://dummyjson.com/products/18")
+            const response = await axios.get(
+                "https://dummyjson.com/products/" + encodeURIComponent(id))
             return response.data as Product
         },
-        staleTime: 150_000
+        staleTime: 3_600_000
     })
-    const { data, isPending, refetch } = result
-    console.log(result)
+    const { data, isPending } = result
     if (isPending) {
-        return <div>still loading</div>
+        return <div>still ding</div>
     }
     return (
         <div className="">
             <ProductPanel product={data}/>
-            <button onClick={() => refetch()}>Reload</button>
+            <div className="flex gap-2 mx-4">
+                <button onClick={() => setId(id - 1)}>Prev</button>
+                <button onClick={() => setId(id + 1)}>Next</button>
+            </div>
         </div>
     )
 }
