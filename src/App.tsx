@@ -20,13 +20,11 @@ export function usePrefetch() {
     const queryClient = useQueryClient()
     useEffect(() => {
         const id = 1
-        for (let i = 0; i < 50; i++) {
-            const pid = id + 1 + i
+        for (let i = 1; i <= 20; i++) {
             queryClient.prefetchQuery({
-                queryKey: ["product", pid],
+                queryKey: ["products", i],
                 queryFn: async () => {
-                    const response = await axios.get(
-                        baseUrl + encodeURIComponent(pid))
+                    const response = await fetchPage(i)
                     return response.data
                 }
             })
@@ -34,25 +32,61 @@ export function usePrefetch() {
     }, [])
 }
 
-export function App() {
+const PAGESIZE = 20
+function fetchPage(page: number) {
+    return axios.get(baseUrl 
+        + "?limit=" +PAGESIZE
+        + "&skip=" + ((page - 1) * PAGESIZE))    
+}
+
+export function useProducts(page: number) {
     const result = useQuery({
-        queryKey: ["products"],
+        queryKey: ["products", page],
         queryFn: async () => {
-            const response = await axios.get(baseUrl)
+            const response = await fetchPage(page)
             return response.data as { "products": Product[] }
         },
         placeholderData: (prev) => { return prev },
         staleTime: 3_600_000
     })
-    const { data, isPending } = result
+    return result
+}
+
+export function useProduct(id: number) {
+    const result = useQuery({
+        queryKey: ["product", id],
+        queryFn: async () => {
+            const response = await axios.get(baseUrl + id)
+            return response.data as Product
+        },
+        staleTime: 3_600_000
+    })
+    return result
+}
+
+
+export function App() {
+    const [page, setPage] = useState(1)
+    const { data, isPending } = useProducts(page)
+    usePrefetch()
     if (isPending) {
         return <div>still loading</div>
     }
     return (
-        <div className="flex flex-wrap gap-4 overflow-y-auto">
-            {data?.products.map((p) => (
-                <ProductPanel product={p} />
-            ))}
+        <div className="grow h-full flex flex-col gap-2">
+            <div className="grow flex flex-wrap gap-4 p-2
+                    justify-start
+                    overflow-y-auto">
+                {data?.products.map((p) => (
+                    <ProductPanel product={p} />
+                ))}
+            </div>
+            <div className="flex gap-2 justify-center">
+                <button onClick={() => 
+                    setPage(Math.max(1, page-1))}>Prev</button>
+                <button onClick={() => 
+                    setPage(page+1)}>Next</button>
+            </div>
         </div>
     )
 }
@@ -66,7 +100,7 @@ export function ProductPanel({ product }: { product?: Product }) {
     if (!product)
         return undefined
     return (
-        <div className="bg-white p-4 m-4 shadow-xl w-[440px] h-[188px]
+        <div className="bg-white p-4 m-2 shadow-xl w-[440px] h-[188px]
                 relative rounded-lg flex flex-col">
             { /* oberer bereich */}
             <div className="h-1 grow flex gap-8 items-stretch">
