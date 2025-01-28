@@ -9,6 +9,7 @@ export type Product = {
     price: number
     thumbnail: string
     rating: number
+    stock: number
     images: string[]
 }
 
@@ -18,7 +19,7 @@ export function App() {
         // run on mounted
         (async() => { 
             // run loading code here
-            const response = await axios.get("https://dummyjson.com/products/11")
+            const response = await axios.get("https://dummyjson.com/products/18")
             setProduct(response.data)
         })()
     }, [])
@@ -37,16 +38,20 @@ export function ProductPanel({ product } : { product?: Product}) {
         return undefined
     return (
         <div className="bg-white p-4 m-4 shadow-xl h-48
-                rounded-lg flex flex-col">
-            { /* obere bereich */ }
+                relative rounded-lg flex flex-col">
+            { /* oberer bereich */ }
             <div className="grow flex gap-8 items-stretch">
                 {/* linke seite */}
-                <div className="flex-col justify-between gap-2">
-                    <img src={product.thumbnail} className="w-16"></img>
-                    <div className="font-bold">{formatGerman(product.price)}€</div>
+                <div className="flex flex-col justify-between gap-2">
+                    <div className="w-32">
+                        <img src={product.thumbnail} ></img>
+                    </div>
+                    <div className="font-bold text-center">
+                        {formatGerman(product.price)}€
+                    </div>
                 </div>
                 {/* rechte seite */}
-                <div className="flex-col gap-2">
+                <div className="flex flex-col gap-2">
                     <div>{product.title}</div>
                     <div className="text-gray-600">{product.description}</div>
                 </div>
