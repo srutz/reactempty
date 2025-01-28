@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
@@ -12,20 +13,30 @@ export type Product = {
     stock: number
     images: string[]
 }
+function delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 export function App() {
-    const [product, setProduct] = useState<Product>()
-    useEffect(() => { 
-        // run on mounted
-        (async() => { 
-            // run loading code here
+    const id = 18
+    const result = useQuery({
+        queryKey: [ "product", id ],
+        queryFn: async () => {
+            await delay(2_000)
             const response = await axios.get("https://dummyjson.com/products/18")
-            setProduct(response.data)
-        })()
-    }, [])
+            return response.data as Product
+        },
+        staleTime: 150_000
+    })
+    const { data, isPending, refetch } = result
+    console.log(result)
+    if (isPending) {
+        return <div>still loading</div>
+    }
     return (
         <div className="">
-            <ProductPanel product={product}/>
+            <ProductPanel product={data}/>
+            <button onClick={() => refetch()}>Reload</button>
         </div>
     )
 }
