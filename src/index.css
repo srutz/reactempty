@@ -15,5 +15,6 @@ body {
     display: flex;
     flex-direction: column;
     height: 1px;
+    @apply bg-gray-300;
 }
 
