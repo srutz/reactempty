@@ -66,26 +66,25 @@ export function useProduct(id: number) {
 
 
 export function App() {
-    const [page, setPage] = useState(1)
+    const p = new URLSearchParams(location.search)
+    const pageParam = Number.parseInt(p.get("page")||"-1") || 1
+    const [page, setPage] = useState(pageParam)
     const { data, isPending } = useProducts(page)
-    usePrefetch()
-    if (isPending) {
-        return <div>still loading</div>
-    }
+    if (isPending) { return <div>still loading</div> }
     return (
         <div className="grow h-full flex flex-col gap-2">
-            <div className="grow flex flex-wrap gap-4 p-2
-                    justify-start
-                    overflow-y-auto">
+            <div className="grow flex flex-wrap gap-2 p-2
+                    justify-start overflow-y-auto">
                 {data?.products.map((p) => (
                     <ProductPanel product={p} />
                 ))}
             </div>
-            <div className="flex gap-2 justify-center">
-                <button onClick={() => 
+            <div className="p-4 flex gap-2 justify-center">
+                <button onClick={() =>
                     setPage(Math.max(1, page-1))}>Prev</button>
-                <button onClick={() => 
-                    setPage(page+1)}>Next</button>
+                <button onClick={() => {
+                    location.href = "/products?page=" + (page + 1)
+                }}>Next</button>
             </div>
         </div>
     )
