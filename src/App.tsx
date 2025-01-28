@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
@@ -13,24 +13,42 @@ export type Product = {
     stock: number
     images: string[]
 }
-function delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
+
+const baseUrl = "https://dummyjson.com/products/"
+
+export function usePrefetch() {
+    const queryClient = useQueryClient()
+    useEffect(() => {
+        const id = 1
+        for (let i = 0; i < 50; i++) {
+            const pid = id + 1 + i
+            queryClient.prefetchQuery({
+                queryKey: ["product", pid],
+                queryFn: async () => {
+                    const response = await axios.get(
+                        baseUrl + encodeURIComponent(pid))
+                    return response.data
+                }
+            })
+        }
+    }, [])
 }
 
 export function App() {
     const [id, setId] = useState(10)
+    usePrefetch()
     const result = useQuery({
         queryKey: [ "product", id ],
         queryFn: async () => {
-            const response = await axios.get(
-                "https://dummyjson.com/products/" + encodeURIComponent(id))
+            const response = await axios.get(baseUrl + encodeURIComponent(id))
             return response.data as Product
         },
+        placeholderData: (prev) => { return prev },
         staleTime: 3_600_000
     })
     const { data, isPending } = result
     if (isPending) {
-        return <div>still ding</div>
+        return <div>still loading</div>
     }
     return (
         <div className="">
