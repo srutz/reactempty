@@ -1,5 +1,5 @@
 import { FormEvent, HTMLInputTypeAttribute, ReactNode, useState } from "react"
-import { SignupForm, SignupFormContext, useSignupForm } from "./SignupFormContext"
+import { EMPTY_FORM, SignupForm, SignupFormContext, useSignupForm } from "./SignupFormContext"
 
 
 export function Box({children }: { children: ReactNode}) {
@@ -11,9 +11,35 @@ export function ErrorText({children}: { children: ReactNode}) {
 }
 
 
-
-
 export function Signup() {
+    const { form, setForm } = useSignupForm()
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        // send to server
+        console.log(form)
+        // reset form but keep email
+        setForm( { ...EMPTY_FORM, email: form.email })
+    }
+    return (
+    <Box>
+        <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
+            <TextInput label="Vorname"
+                value={form.firstname} 
+                onChange={(v) => setForm({...form, firstname: v})}></TextInput>
+            <TextInput label="Nachname"
+                value={form.lastname} 
+                onChange={(v) => setForm({...form, lastname: v})}></TextInput>
+            <TextInput label="Email"
+                value={form.email} 
+                type="email"
+                onChange={(v) => setForm({...form, email: v})}></TextInput>
+            <button className="self-center" type="submit">Submit</button>
+        </form>
+    </Box>
+    )
+}
+
+export function SignupPart2() {
     const { form, setForm } = useSignupForm()
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -22,17 +48,6 @@ export function Signup() {
     return (
     <Box>
         <form onSubmit={(e) => handleSubmit(e)} className="flex flex-col gap-2">
-            <TextInput label="Vorname"
-                value={form.firstname} 
-                errorMsg={
-                    form.firstname.length > 0 && form.firstname.length < 5 && (
-                        <ErrorText>Vorname zu kurz</ErrorText>
-                    )
-                }
-                onChange={(v) => setForm({...form, firstname: v})}></TextInput>
-            <TextInput label="Nachname"
-                value={form.lastname} 
-                onChange={(v) => setForm({...form, lastname: v})}></TextInput>
             <TextInput label="Straße"
                 value={form.street} 
                 onChange={(v) => setForm({...form, street: v})}></TextInput>

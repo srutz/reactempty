@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { useEffect } from "react"
 import { createBrowserRouter, Outlet, RouterProvider, useNavigate, useParams, useSearchParams } from "react-router-dom"
-import { Signup, } from "./Signup"
+import { Signup, SignupPart2, } from "./Signup"
 import { TransitionLink } from "./TransitionLink"
 
 const router = createBrowserRouter(
@@ -16,6 +16,7 @@ const router = createBrowserRouter(
                 { path: "/products/:id", element: <SingleProduct /> },
                 { path: "/imprint", element: <Imprint /> },
                 { path: "/signup", element: <Signup /> },
+                { path: "/signup2", element: <SignupPart2 /> },
                 { path: "/*", element: <div>wildcardcatchall</div> },
             ]
         },
@@ -51,6 +52,7 @@ export function MenuBar() {
         <TransitionLink to="/">Home</TransitionLink>
         <TransitionLink to="/imprint">Imprint</TransitionLink>
         <TransitionLink to="/signup">Signup</TransitionLink>
+        <TransitionLink to="/signup2">Signup-Part2</TransitionLink>
     </div>)
 }
 

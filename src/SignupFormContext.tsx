@@ -1,6 +1,10 @@
-import { createContext, ReactNode, useContext, useState } from "react"
+import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 
-/* infrastructure for a signup form */
+/* infrastructure for a signup form
+ * eg: Model for the signup form
+ *
+ * in your view use useSignupForm()
+ */
 
 export type SignupForm = {
     firstname: string
@@ -16,14 +20,29 @@ export type SignupFormContextType = {
 }
 export const SignupFormContext = createContext<SignupFormContextType|null >(null)
 
+export const EMPTY_FORM = {
+    firstname: "",
+    lastname: "",
+    email: "",
+    street: "",
+    city: "",
+}
+
 export function SignupFormContextProvider({ children }: { children: ReactNode}) {
-    const [form, setForm ] = useState<SignupForm>({
-        firstname: "",
-        lastname: "",
-        email: "",
-        street: "",
-        city: "",
+    const [form, setForm ] = useState<SignupForm>(() => {
+        const storedFormRaw = localStorage.getItem("signupform")
+        const storeForm: SignupForm = storedFormRaw ? JSON.parse(storedFormRaw) : undefined
+        const initialValue: SignupForm = {
+            ...EMPTY_FORM,
+            ...storeForm as any
+        }
+
+        return initialValue
     })
+    useEffect(() => {
+        console.log("form", form)
+        localStorage.setItem("signupform", JSON.stringify(form, null, 4))
+    }, [ form ])
     return (
         <SignupFormContext.Provider value={{ form, setForm }}>
             {children}
