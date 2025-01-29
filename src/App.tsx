@@ -1,21 +1,21 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
-import { useContext, useEffect } from "react"
-import { createBrowserRouter, createHashRouter, NavLink, Outlet, RouterProvider, useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { useEffect } from "react"
+import { createBrowserRouter, Outlet, RouterProvider, useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { Signup, } from "./Signup"
 import { TransitionLink } from "./TransitionLink"
-import { Signup, SignupFormContext, useSignupForm } from "./Signup"
 
 const router = createBrowserRouter(
     [
-        { 
-            path: "/", 
+        {
+            path: "/",
             element: <AppFrame></AppFrame>,
             children: [
                 { path: "/", element: <App></App> },
                 { path: "/products", element: <App></App> },
-                { path: "/products/:id", element: <SingleProduct/> },
-                { path: "/imprint", element: <Imprint/> },
-                { path: "/signup", element: <Signup/> },
+                { path: "/products/:id", element: <SingleProduct /> },
+                { path: "/imprint", element: <Imprint /> },
+                { path: "/signup", element: <Signup /> },
                 { path: "/*", element: <div>wildcardcatchall</div> },
             ]
         },
@@ -40,6 +40,7 @@ export function AppFrame() {
         <Footer></Footer>
     </div>)
 }
+
 
 export function Footer() {
     return (<div className="bg-white border-t border-gray-500 h-8">...</div>)
@@ -90,10 +91,10 @@ export type Product = {
 const baseUrl = "https://dummyjson.com/products/"
 
 export function usePrefetch() {
-    const queryClient = useQueryClient()
+    const { prefetchQuery } = useQueryClient()
     useEffect(() => {
         for (let i = 1; i <= 20; i++) {
-            queryClient.prefetchQuery({
+            prefetchQuery({
                 queryKey: ["products", i],
                 queryFn: async () => {
                     const response = await fetchPage(i)
@@ -106,22 +107,20 @@ export function usePrefetch() {
 
 const PAGESIZE = 20
 function fetchPage(page: number) {
-    return axios.get(baseUrl 
-        + "?limit=" +PAGESIZE
-        + "&skip=" + ((page - 1) * PAGESIZE))    
+    return axios.get(baseUrl
+        + "?limit=" + PAGESIZE
+        + "&skip=" + ((page - 1) * PAGESIZE))
 }
-
 export function useProducts(page: number) {
-    const result = useQuery({
+    return useQuery({
         queryKey: ["products", page],
         queryFn: async () => {
             const response = await fetchPage(page)
-            return response.data as { "products": Product[] }
+            return response.data as { products: Product[] }
         },
-        placeholderData: (prev) => { return prev },
+        placeholderData: (prev) => prev,
         staleTime: 3_600_000
     })
-    return result
 }
 
 export function useProduct(id: number) {
@@ -138,8 +137,8 @@ export function useProduct(id: number) {
 
 
 export function App() {
-    const [ p ] = useSearchParams()
-    const page = Number.parseInt(p.get("page")||"-1") || 1
+    const [p] = useSearchParams()
+    const page = Number.parseInt(p.get("page") || "-1") || 1
     const navigate = useNavigate()
     const { data, isPending } = useProducts(page)
     if (isPending) { return <div>still loading</div> }
@@ -150,13 +149,13 @@ export function App() {
                         justify-center overflow-y-auto">
                     {data?.products.map((p) => (
                         <div key={p.id} className="hover:bg-gray-100 cursor-pointer"
-                                onClick={() => navigate("/products/" + p.id)}>
+                            onClick={() => navigate("/products/" + p.id)}>
                             <ProductPanel key={p.id} product={p} />
                         </div>
                     ))}
                 </div>
                 <div className="p-4 flex gap-2 justify-center">
-                <button disabled={page <= 1} 
+                    <button disabled={page <= 1}
                         onClick={() => navigate("/products?page=" + (page - 1))}>
                         Prev</button>
                     <button onClick={() => navigate("/products?page=" + (page + 1))}>

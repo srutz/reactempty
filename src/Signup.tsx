@@ -1,12 +1,6 @@
-import { createContext, FormEvent, Fragment, HTMLInputTypeAttribute, ReactNode, useContext, useState } from "react"
+import { FormEvent, HTMLInputTypeAttribute, ReactNode, useState } from "react"
+import { SignupForm, SignupFormContext, useSignupForm } from "./SignupFormContext"
 
-type SignupForm = {
-    firstname: string
-    lastname: string
-    street: string
-    city: string
-    email: string
-}
 
 export function Box({children }: { children: ReactNode}) {
     return (<div className="p-4 m-4 shadow-xl bg-white">{children}</div>)
@@ -16,14 +10,6 @@ export function ErrorText({children}: { children: ReactNode}) {
     return (<div className="text-sm text-red-600">{children}</div>)
 }
 
-export const SignupFormContext = createContext<
-    { form: SignupForm, setForm: (form: SignupForm) => void } | null >(null)
-
-export function useSignupForm() {
-    const c = useContext(SignupFormContext)
-    if (!c) throw "context not defined"
-    return c
-}
 
 export function SignupFormContextProvider({ children }: { children: ReactNode}) {
     const [form, setForm ] = useState<SignupForm>({
@@ -41,7 +27,7 @@ export function SignupFormContextProvider({ children }: { children: ReactNode}) 
 }
 
 export function Signup() {
-    const { form, setForm } = useContext(SignupFormContext)!
+    const { form, setForm } = useSignupForm()
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         console.log(form)
