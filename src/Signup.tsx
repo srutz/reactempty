@@ -1,4 +1,4 @@
-import { FormEvent, Fragment, HTMLInputTypeAttribute, ReactNode, useState } from "react"
+import { createContext, FormEvent, Fragment, HTMLInputTypeAttribute, ReactNode, useContext, useState } from "react"
 
 type SignupForm = {
     firstname: string
@@ -16,7 +16,11 @@ export function ErrorText({children}: { children: ReactNode}) {
     return (<div className="text-sm text-red-600">{children}</div>)
 }
 
-export function Signup() {
+const SignupFormContext = createContext<
+    { form: SignupForm, setForm: (form: SignupForm) => void } | null >
+(null)
+
+export function SignupFormContextProvider({ children }: { children: ReactNode}) {
     const [form, setForm ] = useState<SignupForm>({
         firstname: "",
         lastname: "",
@@ -24,6 +28,15 @@ export function Signup() {
         street: "",
         city: "",
     })
+    return (
+        <SignupFormContext.Provider value={{ form, setForm }}>
+            {children}
+        </SignupFormContext.Provider>
+    )
+}
+
+export function Signup() {
+    const { form, setForm } = useContext(SignupFormContext)!
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         console.log(form)
