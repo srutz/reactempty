@@ -16,9 +16,14 @@ export function ErrorText({children}: { children: ReactNode}) {
     return (<div className="text-sm text-red-600">{children}</div>)
 }
 
-const SignupFormContext = createContext<
-    { form: SignupForm, setForm: (form: SignupForm) => void } | null >
-(null)
+export const SignupFormContext = createContext<
+    { form: SignupForm, setForm: (form: SignupForm) => void } | null >(null)
+
+export function useSignupForm() {
+    const c = useContext(SignupFormContext)
+    if (!c) throw "context not defined"
+    return c
+}
 
 export function SignupFormContextProvider({ children }: { children: ReactNode}) {
     const [form, setForm ] = useState<SignupForm>({

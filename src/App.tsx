@@ -1,9 +1,9 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { createBrowserRouter, createHashRouter, NavLink, Outlet, RouterProvider, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { TransitionLink } from "./TransitionLink"
-import { Signup } from "./Signup"
+import { Signup, SignupFormContext, useSignupForm } from "./Signup"
 
 const router = createBrowserRouter(
     [
@@ -50,7 +50,7 @@ export function MenuBar() {
         <TransitionLink to="/">Home</TransitionLink>
         <TransitionLink to="/imprint">Imprint</TransitionLink>
         <TransitionLink to="/signup">Signup</TransitionLink>
-        </div>)
+    </div>)
 }
 
 export function Content() {
