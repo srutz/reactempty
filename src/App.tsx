@@ -3,6 +3,7 @@ import axios from "axios"
 import { useEffect } from "react"
 import { createBrowserRouter, createHashRouter, NavLink, Outlet, RouterProvider, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { TransitionLink } from "./TransitionLink"
+import { Signup } from "./Signup"
 
 const router = createBrowserRouter(
     [
@@ -14,6 +15,7 @@ const router = createBrowserRouter(
                 { path: "/products", element: <App></App> },
                 { path: "/products/:id", element: <SingleProduct/> },
                 { path: "/imprint", element: <Imprint/> },
+                { path: "/signup", element: <Signup/> },
                 { path: "/*", element: <div>wildcardcatchall</div> },
             ]
         },
@@ -47,6 +49,7 @@ export function MenuBar() {
     return (<div className="bg-white h-16 flex gap-2 items-center px-2">
         <TransitionLink to="/">Home</TransitionLink>
         <TransitionLink to="/imprint">Imprint</TransitionLink>
+        <TransitionLink to="/signup">Signup</TransitionLink>
         </div>)
 }
 
