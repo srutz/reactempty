@@ -11,20 +11,7 @@ export function ErrorText({children}: { children: ReactNode}) {
 }
 
 
-export function SignupFormContextProvider({ children }: { children: ReactNode}) {
-    const [form, setForm ] = useState<SignupForm>({
-        firstname: "",
-        lastname: "",
-        email: "",
-        street: "",
-        city: "",
-    })
-    return (
-        <SignupFormContext.Provider value={{ form, setForm }}>
-            {children}
-        </SignupFormContext.Provider>
-    )
-}
+
 
 export function Signup() {
     const { form, setForm } = useSignupForm()

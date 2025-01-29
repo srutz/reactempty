@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { RouterMain } from './App.tsx'
 import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { SignupFormContextProvider } from './Signup.tsx'
+import { SignupFormContextProvider } from './SignupFormContext.tsx'
 
 const queryClient = new QueryClient()
 
